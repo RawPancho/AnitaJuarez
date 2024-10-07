@@ -95,15 +95,12 @@
 var input = document.querySelector('input'); // get the input element
 input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
 resizeInput.call(input); // immediately call the function
-
 function resizeInput() {
-//if (this.style.width ){
   this.style.width = this.value.length + "ch";
-//}
-
+}
+//Replace Profesionals with their Xsissors
 input.addEventListener('input', replacePros);
 replacePros.call(input);
-}
 function replacePros(){
         var list = document.getElementById("list_vendio_sc").value;
         switch (list){
@@ -147,11 +144,5 @@ function replacePros(){
         var newText = list.replace(cambio,prof);
         document.getElementById("list_vendio_sc").value = newText;
       }
-function cargarServicioCompartido(){
-}
-
-function reportar(){
-}
-
 </script>
 </html>
