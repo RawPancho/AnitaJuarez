@@ -1,5 +1,6 @@
       const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
       const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
+      const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM'
 
       // Discovery doc URL for APIs used by the quickstart
       const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
@@ -21,10 +22,6 @@
         gapi.load('client', initializeGapiClient);
       }
 
-      /**
-       * Callback after the API client is loaded. Loads the
-       * discovery doc to initialize the API.
-       */
       async function initializeGapiClient() {
         await gapi.client.init({
           apiKey: API_KEY,
@@ -97,7 +94,7 @@
         let response;
         try {
           response = await gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM',
+            spreadsheetId: SHEETSID,
             range: 'Acta Principal!A3:D',
           });
         } catch (err) {
