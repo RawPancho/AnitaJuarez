@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">  
   <!--Styling-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  
+
   <style>
 
     .lists {padding: 4px; width: 150px}
@@ -28,7 +28,6 @@
     .section.card-deck { padding: 8px; display: flex; flex-wrap: wrap;}
     .center { text-align: center;}
 </style>
-
   <datalist id="profesional">
     <option value="Anita">
     <option value="Cande">
@@ -50,6 +49,7 @@
     <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit?gid=406537325#gid=406537325">Cuaderno de Acta byAnitaJuarez</a>
     <br>
 
+    <!--Autentificacion-->
     <button id="authorize_button" class="spaced btn btn-primary" onclick="handleAuthClick()">Autorizar</button>
     <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()">Desvincular</button>
     <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
@@ -82,8 +82,12 @@
       <br>
       <button type="button" id="btn_sc" onclick="cargarServicioCompartido()" style="width:150px;margin:4px 0px">Cargar</button>
     </div>
-  </div>
 
+    <div class="separaciones">
+      <h4>Entradas de Prueba</h4>
+      <pre id="content" style="white-space: pre-wrap;"></pre>
+    </div>
+  </div>
 </body> 
 <script type="text/javascript">
 
@@ -92,13 +96,13 @@ var input = document.querySelector('input'); // get the input element
 input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
 resizeInput.call(input); // immediately call the function
 
-input.addEventListener('input', replacePros);
-replacePros.call(input);
-
 function resizeInput() {
 //if (this.style.width ){
   this.style.width = this.value.length + "ch";
 //}
+
+input.addEventListener('input', replacePros);
+replacePros.call(input);
 }
 function replacePros(){
         var list = document.getElementById("list_vendio_sc").value;
@@ -143,7 +147,6 @@ function replacePros(){
         var newText = list.replace(cambio,prof);
         document.getElementById("list_vendio_sc").value = newText;
       }
-
 function cargarServicioCompartido(){
 }
 
