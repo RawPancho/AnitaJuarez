@@ -44,15 +44,18 @@
 
 </head>
 <body class="body">
+
   <div class="divisionPrincipal" >
     
-    <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit">Cuaderno de Acta byAnitaJuarez</a>
+    <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit?gid=406537325#gid=406537325">Cuaderno de Acta byAnitaJuarez</a>
     <br>
-      <button type="button" class="spaced btn btn-primary" id="authorize_button">
-                <span id="authorizeLoadIcon" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden=""></span>
-                Autorizar
-      </button>
-      <button type="button" class="spaced btn btn-primary" id="signout_button" hidden="">Desvincular</button>
+
+    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+    <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
+    <script async defer src="autho.js"></script>
+
     <br>
     <div class="separaciones">
       
@@ -85,8 +88,8 @@
 <script type="text/javascript">
 
 // Client ID and API key from the Developer Console
-var CLIENT_ID = '1070684392615-c56qviqqoaohf5vl60ti41jskuitdis9.apps.googleusercontent.com';
-        var API_KEY = 'AIzaSyDQpiPLMDw-AIzaSyDRh-saaqsHUPlr5KspuBssvaoJbH643lc';
+var CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
+        var API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
         var SPREADSHEETID = '1XJf58kS6GEaggU-V-hWOlPc3q1Z8C81xrP-2Y2DLHOI';
         // Array of API discovery doc URLs for APIs used by the quickstart
         var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
