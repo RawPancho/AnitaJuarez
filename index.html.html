@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Acta Laboral by Anita Juarez v0.5</title>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">  
+  <!--Styling-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  
+  <style>
+
+    .lists {padding: 4px; width: 150px}
+    .body {background-color: rgb(233, 248, 255); color: #010d22; }
+    .divisionPrincipal {margin: 16px 16px; box-sizing:border-box;}
+    .divisionSecundaria{margin: 16px 16px; box-sizing: border-box; width: 50vw;}
+    .text-boxpand {background-color: #ffffff; color: #010d22; padding:4px;align-self: center; min-width:230px;max-width: 100%;}
+    .text-box {background-color: #ffffff; color: #010d22; padding:4px;align-self: center; width: 150px}
+    .spaced {margin-top:4px; margin-bottom:4px;}
+    .padded {padding:8px;}
+    .separaciones {margin: 16px 0px; padding: 4px 8px 16px 8px; background-color: rgb(187, 206, 248); border-radius: 10px;}
+    .cmb-btn {color: #ffffff;}
+    .preview.acta { border-radius: 10px;}
+    .card-footer.full-flex { display: flex; padding: 0;}
+    .half-flex-btn { flex: 50%; margin: -1px; border-radius: 0;}
+    .half-flex-btn.left { border-bottom-left-radius: 8px;}
+    .half-flex-btn.right { border-bottom-right-radius: 8px;}
+    .section.card-deck { padding: 8px; display: flex; flex-wrap: wrap;}
+    .center { text-align: center;}
+</style>
+
+  <datalist id="profesional">
+    <option value="Anita">
+    <option value="Cande">
+    <option value="Dennis">
+    <option value="Eli">
+    <option value="Gabi">
+    <option value="Mari">
+    <option value="Marti">
+    <option value="Meli">
+    <option value="Pela">
+    <option value="Sil">
+  </datalist>
+
+</head>
+<body class="body">
+  <div class="divisionPrincipal" >
+    
+    <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit">Cuaderno de Acta byAnitaJuarez</a>
+    <br>
+      <button type="button" class="spaced btn btn-primary" id="authorize_button">
+                <span id="authorizeLoadIcon" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden=""></span>
+                Autorizar
+      </button>
+      <button type="button" class="spaced btn btn-primary" id="signout_button" hidden="">Desvincular</button>
+    <br>
+    <div class="separaciones">
+      
+        <label for="txt_reporte">Reportar en el acta</label>
+        <br>
+        <input type="text" id="txt_reporte" class="text-boxpand">
+        <br> <br> 
+  
+        <label for="list_profesional">Emisor</label>
+        <br>
+          <input list="profesional" id="list_profesional" class="lists" placeholder="Profesional">
+        <button type="button" id="btn_reportar" onclick="reportar()" style="width:75px">Enviar</button>
+    </div>
+
+    <div class="separaciones">
+      <h3> Servicio Compartido</h3>
+        <input list="profesional" id="list_vendio_sc" class="lists" placeholder="Seleccionar"> <label for="list_vendio_sc">Quien lo vendió</label>
+      <br>
+        <input list="profesional" id="list_hizo_sc" class="lists" placeholder="Seleccionar"> <label for="list_hizo_sc">Quien lo hizo</label>
+      <br>
+        <input type="text" id="txt_sc" class="text-box"> <label for="txt_sc">Servicio</label>
+      <br>
+        <input type="text" id="txt_Cliente_sc" class="text-box"> <label for="txt_Cliente_sc">Clienta</label>
+      <br>
+      <button type="button" id="btn_sc" onclick="cargarServicioCompartido()" style="width:150px;margin:4px 0px">Cargar</button>
+    </div>
+  </div>
+
+</body> 
+<script type="text/javascript">
+
+// Client ID and API key from the Developer Console
+var CLIENT_ID = '1070684392615-c56qviqqoaohf5vl60ti41jskuitdis9.apps.googleusercontent.com';
+        var API_KEY = 'AIzaSyDQpiPLMDw-AIzaSyDRh-saaqsHUPlr5KspuBssvaoJbH643lc';
+        var SPREADSHEETID = '1XJf58kS6GEaggU-V-hWOlPc3q1Z8C81xrP-2Y2DLHOI';
+        // Array of API discovery doc URLs for APIs used by the quickstart
+        var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+        // Authorization scopes required by the API; multiple scopes can be
+        // included, separated by spaces.
+        var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+  const authorizeButton = document.getElementById('authorize_button');
+  const signoutButton = document.getElementById('signout_button');
+  const txt_reporte = document.getElementById('txt_reporte');
+  const list_profesional = document.getElementById('list_profesional');
+
+  const list_hizo_sc = document.getElementById('list_hizo_sc');
+  const list_vendio_sc = document.getElementById('list_vendio_sc');
+  const txt_sc = document.getElementById('txt_sc');
+  const txt_Cliente_sc = document.getElementById('txt_Cliente_sc');
+
+  const TIMEDATAPAGE = "'Time allocation data'!";
+
+//Auto adjust textboxes width
+var input = document.querySelector('input'); // get the input element
+input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
+resizeInput.call(input); // immediately call the function
+
+input.addEventListener('input', replacePros);
+replacePros.call(input);
+
+function resizeInput() {
+//if (this.style.width ){
+  this.style.width = this.value.length + "ch";
+//}
+}
+function replacePros(){
+        var list = document.getElementById("list_vendio_sc").value;
+        switch (list){
+          case '1 ':
+          var prof = 'Anita';
+          var cambio = '1 ';
+          break;
+          case '2 ':
+          var prof = 'Meli';
+          var cambio = '2 ';
+          break;
+          case '9 ':
+          var prof = 'Pela';
+          var cambio = '9 ';
+          break;
+          case '10 ':
+          var prof = 'Eli';
+          var cambio = '10 ';
+          break;
+          case '20 ':
+          var prof = 'Cande';
+          var cambio = '20 ';
+          break;
+          case '22 ':
+          var prof = 'Marti';
+          var cambio = '22 ';
+          break;
+          case '29 ':
+          var prof = 'Mari';
+          var cambio = '29 ';
+          break;
+          case '30 ':
+          var prof = 'Gabi';
+          var cambio = '30 ';
+          break;
+          case '31 ':
+          var prof = 'Dennis';
+          var cambio = '31 ';
+          break;
+        }
+        var newText = list.replace(cambio,prof);
+        document.getElementById("list_vendio_sc").value = newText;
+      }
+
+function cargarServicioCompartido(){
+}
+
+function reportar(){
+
+}
+
+</script>
+</html>
