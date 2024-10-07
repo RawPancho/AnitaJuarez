@@ -95,7 +95,7 @@
         try {
           response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SHEETSID,
-            range: 'Acta Principal!A3:D',
+            range: 'Acta Principal!A2:D',
           });
         } catch (err) {
          console.error(err)
