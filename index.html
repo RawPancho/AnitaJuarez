@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">  
   <!--Styling-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  
+
   <style>
 
     .lists {padding: 4px; width: 150px}
@@ -28,7 +28,6 @@
     .section.card-deck { padding: 8px; display: flex; flex-wrap: wrap;}
     .center { text-align: center;}
 </style>
-
   <datalist id="profesional">
     <option value="Anita">
     <option value="Cande">
@@ -50,8 +49,9 @@
     <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit?gid=406537325#gid=406537325">Cuaderno de Acta byAnitaJuarez</a>
     <br>
 
-    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+    <!--Autentificacion-->
+    <button id="authorize_button" class="spaced btn btn-primary" onclick="handleAuthClick()">Autorizar</button>
+    <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()">Desvincular</button>
     <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
     <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
     <script async defer src="js/autho.js"></script>
@@ -82,45 +82,27 @@
       <br>
       <button type="button" id="btn_sc" onclick="cargarServicioCompartido()" style="width:150px;margin:4px 0px">Cargar</button>
     </div>
-  </div>
 
+    <div class="separaciones">
+      <h4>Entradas de Prueba</h4>
+      <pre id="content" style="white-space: pre-wrap;"></pre>
+    </div>
+  </div>
 </body> 
 <script type="text/javascript">
-
-// Client ID and API key from the Developer Console
-var CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
-        var API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
-        var SPREADSHEETID = '1XJf58kS6GEaggU-V-hWOlPc3q1Z8C81xrP-2Y2DLHOI';
-        // Array of API discovery doc URLs for APIs used by the quickstart
-        var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
-        // Authorization scopes required by the API; multiple scopes can be
-        // included, separated by spaces.
-        var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
-
-  const authorizeButton = document.getElementById('authorize_button');
-  const signoutButton = document.getElementById('signout_button');
-  const txt_reporte = document.getElementById('txt_reporte');
-  const list_profesional = document.getElementById('list_profesional');
-
-  const list_hizo_sc = document.getElementById('list_hizo_sc');
-  const list_vendio_sc = document.getElementById('list_vendio_sc');
-  const txt_sc = document.getElementById('txt_sc');
-  const txt_Cliente_sc = document.getElementById('txt_Cliente_sc');
-
-  const TIMEDATAPAGE = "'Time allocation data'!";
 
 //Auto adjust textboxes width
 var input = document.querySelector('input'); // get the input element
 input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
 resizeInput.call(input); // immediately call the function
 
-input.addEventListener('input', replacePros);
-replacePros.call(input);
-
 function resizeInput() {
 //if (this.style.width ){
   this.style.width = this.value.length + "ch";
 //}
+
+input.addEventListener('input', replacePros);
+replacePros.call(input);
 }
 function replacePros(){
         var list = document.getElementById("list_vendio_sc").value;
@@ -165,12 +147,10 @@ function replacePros(){
         var newText = list.replace(cambio,prof);
         document.getElementById("list_vendio_sc").value = newText;
       }
-
 function cargarServicioCompartido(){
 }
 
 function reportar(){
-
 }
 
 </script>
