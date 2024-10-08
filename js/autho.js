@@ -1,13 +1,12 @@
       const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
       const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
       const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM'
-
       // Discovery doc URL for APIs used by the quickstart
       const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
 
       // Authorization scopes required by the API; multiple scopes can be
       // included, separated by spaces.
-      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
       let tokenClient;
       let gapiInited = false;
@@ -64,6 +63,8 @@
           document.getElementById('signout_button').style.visibility = 'visible';
           document.getElementById('authorize_button').innerText = 'Refresh';
           await listMajors();
+          document.getElementById('btn_reportar').disabled = false;
+          document.getElementById('btn_sc').disabled = false;
         };
 
         if (gapi.client.getToken() === null) {
@@ -95,7 +96,7 @@
         try {
           response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SHEETSID,
-            range: 'Acta Principal!A2:D',
+            range: 'Acta Principal!A2:D10',
           });
         } catch (err) {
          console.error(err)
@@ -106,8 +107,4 @@
           return;
         }
         console.log(range.values)
-        const output = range.values.reduce(
-            (str, row) => `${str}${row[0]}, ${row[4]}\n`,
-            'Name, Major:\n');
-        document.getElementById('content').innerText = output;
       }
