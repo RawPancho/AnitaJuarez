@@ -21,11 +21,6 @@
     .separaciones {margin: 16px 0px; padding: 4px 8px 16px 8px; background-color: rgb(187, 206, 248); border-radius: 10px;}
     .cmb-btn {color: #ffffff;}
     .preview.acta { border-radius: 10px;}
-    .card-footer.full-flex { display: flex; padding: 0;}
-    .half-flex-btn { flex: 50%; margin: -1px; border-radius: 0;}
-    .half-flex-btn.left { border-bottom-left-radius: 8px;}
-    .half-flex-btn.right { border-bottom-right-radius: 8px;}
-    .section.card-deck { padding: 8px; display: flex; flex-wrap: wrap;}
     .center { text-align: center;}
 </style>
   <datalist id="profesional">
@@ -67,7 +62,7 @@
         <label for="list_profesional">Emisor</label>
         <br>
           <input list="profesional" id="list_profesional" class="lists" placeholder="Profesional">
-        <button type="button" id="btn_reportar" onclick="reportar()" style="width:75px">Enviar</button>
+        <button type="button" id="btn_reportar" onclick="reportar()" style="width:75px" disabled="true">Enviar</button>
     </div>
 
     <div class="separaciones">
@@ -80,17 +75,16 @@
       <br>
         <input type="text" id="txt_Cliente_sc" class="text-box"> <label for="txt_Cliente_sc">Clienta</label>
       <br>
-      <button type="button" id="btn_sc" onclick="cargarServicioCompartido()" style="width:150px;margin:4px 0px">Cargar</button>
+      <button type="button" id="btn_sc" onclick="cargarServicioCompartido()" disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
     </div>
 
     <div class="separaciones">
-      <h4>Entradas de Prueba</h4>
       <pre id="content" style="white-space: pre-wrap;"></pre>
     </div>
   </div>
-</body> 
-<script type="text/javascript">
+</body>
 
+<script type="text/javascript">
 //Auto adjust textboxes width
 var input = document.querySelector('input'); // get the input element
 input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
