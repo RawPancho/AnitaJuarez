@@ -62,7 +62,7 @@
           }
           document.getElementById('signout_button').style.visibility = 'visible';
           document.getElementById('authorize_button').innerText = 'Refresh';
-          await listMajors();
+          await muestraDeActa();
           document.getElementById('btn_reportar').disabled = false;
           document.getElementById('btn_sc').disabled = false;
         };
@@ -91,7 +91,8 @@
         }
       }
 
-      async function listMajors() {
+      let ultimasEntradas
+      async function muestraDeActa() {
         let response;
         try {
           response = await gapi.client.sheets.spreadsheets.values.get({
@@ -105,6 +106,17 @@
         if (!range || !range.values || range.values.length == 0) {
           console.warn("No hay entradas cargadas.")
           return;
-        }
-        console.log(range.values)
+        }        
+        ultimasEntradas = [];
+        range.values.forEach((fila) => {
+          if (isNaN(parseInt(fila[1])) || fila[4] !== undefined) return;
+          const filasActa = {
+            entrada: fila[1],
+            profesional: fila[2],
+            fecha: fila[3],
+            hora: fila[4],            
+          };
+          turnos.push(filasActa);
+        });
+        console.log(ultimasEntradas);
       }
