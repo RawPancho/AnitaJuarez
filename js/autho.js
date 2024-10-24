@@ -1,6 +1,6 @@
       const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
       const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
-      const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM'
+      const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
       // Discovery doc URL for APIs used by the quickstart
       const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
 
@@ -41,6 +41,7 @@
         });
         gisInited = true;
         maybeEnableButtons();
+        
       }
 
       /**
@@ -51,7 +52,6 @@
           document.getElementById('authorize_button').style.visibility = 'visible';
         }
       }
-
       /**
        *  Sign in the user upon button click.
        */
@@ -62,9 +62,7 @@
           }
           document.getElementById('signout_button').style.visibility = 'visible';
           document.getElementById('authorize_button').innerText = 'Refresh';
-          await muestraDeActa();
-          document.getElementById('btn_reportar').disabled = false;
-          document.getElementById('btn_sc').disabled = false;
+          InicioCorrecto();
         };
 
         if (gapi.client.getToken() === null) {
@@ -91,32 +89,20 @@
         }
       }
 
-      let ultimasEntradas
-      async function muestraDeActa() {
-        let response;
-        try {
-          response = await gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: SHEETSID,
-            range: 'Acta Principal!A2:D10',
-          });
-        } catch (err) {
-         console.error(err)
-        }
-        const range = response.result;
-        if (!range || !range.values || range.values.length == 0) {
-          console.warn("No hay entradas cargadas.")
-          return;
-        }        
-        ultimasEntradas = [];
-        range.values.forEach((fila) => {
-          if (isNaN(parseInt(fila[1])) || fila[4] !== undefined) return;
-          const filasActa = {
-            entrada: fila[1],
-            profesional: fila[2],
-            fecha: fila[3],
-            hora: fila[4],            
-          };
-          turnos.push(filasActa);
-        });
-        console.log(ultimasEntradas);
-      }
+// Guardar el token después de la autenticación exitosa
+localStorage.setItem('gapiToken', JSON.stringify(gapi.client.getToken()));
+
+// Al cargar la página, intentar restaurar el token
+const savedToken = JSON.parse(localStorage.getItem('gapiToken'));
+if (savedToken) {
+  gapi.client.setToken(savedToken);
+  InicioCorrecto();
+  // Aquí puedes ejecutar cualquier función que dependa de estar autenticado
+}
+
+async function InicioCorrecto() {
+  await muestraDeActa();
+  document.getElementById('btn_reportar').disabled = false;
+  document.getElementById('btn_sc').disabled = false;
+  document.getElementById('ocultada').style.visibility = 'visible';  
+}
