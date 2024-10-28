@@ -30,6 +30,7 @@ function resizeInput() {
       '29': 'Mari',
       '30': 'Gabi',
       '31': 'Dennis',
+      'Ja': 'Jari',
   };
   function handleAutocomplete(input) {
     const inputVal = input.value.trim(); // Obtiene el valor ingresado, eliminando espacios

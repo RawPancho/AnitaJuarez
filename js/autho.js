@@ -17,7 +17,6 @@
       window.onload = function() {
         document.getElementById('authorize_button').innerText = 'Autorizar';
         document.getElementById('signout_button').style.visibility = 'hidden';
-        FlashPantalla('Dale Basura!!');
       };
    
       function gapiLoaded() {
