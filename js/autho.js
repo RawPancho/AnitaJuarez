@@ -1,19 +1,16 @@
       const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
       const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
       const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
-      // Discovery doc URL for APIs used by the quickstart
       const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-
-      // Authorization scopes required by the API; multiple scopes can be
-      // included, separated by spaces.
       const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
       let tokenClient;
       let gapiInited = false;
       let gisInited = false;
 
-      document.getElementById('gapi').addEventListener('load',gapiLoaded)
-      document.getElementById('gis').addEventListener('load',gisLoaded)
+      document.getElementById('gapi').addEventListener('load',gapiLoaded);
+      document.getElementById('gis').addEventListener('load',gisLoaded);
+
       document.getElementById('authorize_button').style.visibility = 'hidden';
       document.getElementById('signout_button').style.visibility = 'hidden';
 
@@ -28,6 +25,7 @@
         });
         gapiInited = true;
         maybeEnableButtons();
+        checkStoredToken();
       }
 
       /**
@@ -60,9 +58,8 @@
           if (resp.error !== undefined) {
             throw (resp);
           }
-          document.getElementById('signout_button').style.visibility = 'visible';
-          document.getElementById('authorize_button').innerText = 'Refresh';
-          InicioCorrecto();
+          saveToken();
+          onAuthSuccess();
         };
 
         if (gapi.client.getToken() === null) {
@@ -83,26 +80,38 @@
         if (token !== null) {
           google.accounts.oauth2.revoke(token.access_token);
           gapi.client.setToken('');
-          document.getElementById('content').innerText = '';
-          document.getElementById('authorize_button').innerText = 'Authorize';
-          document.getElementById('signout_button').style.visibility = 'hidden';
+          localStorage.removeItem('gapiToken'); // Elimina el token guardado
+          onSignout();
         }
       }
 
-// Guardar el token después de la autenticación exitosa
-localStorage.setItem('gapiToken', JSON.stringify(gapi.client.getToken()));
+      function saveToken() {
+        const token = gapi.client.getToken();
+        if (token) {
+          localStorage.setItem('gapiToken', JSON.stringify(token));
+        }
+      }
+      
+      // Función para verificar y cargar el token guardado
+      function checkStoredToken() {
+        const savedToken = JSON.parse(localStorage.getItem('gapiToken'));
+        if (savedToken) {
+          gapi.client.setToken(savedToken);
+          onAuthSuccess();
+        }
+      }
 
-// Al cargar la página, intentar restaurar el token
-const savedToken = JSON.parse(localStorage.getItem('gapiToken'));
-if (savedToken) {
-  gapi.client.setToken(savedToken);
-  InicioCorrecto();
-  // Aquí puedes ejecutar cualquier función que dependa de estar autenticado
-}
-
-async function InicioCorrecto() {
-  await muestraDeActa();
-  document.getElementById('btn_reportar').disabled = false;
-  document.getElementById('btn_sc').disabled = false;
-  document.getElementById('ocultada').style.visibility = 'visible';  
-}
+      async function onAuthSuccess() {
+        await muestraDeActa();
+        document.getElementById('btn_reportar').disabled = false;
+        document.getElementById('btn_sc').disabled = false;
+        document.getElementById('signout_button').style.visibility = 'visible';
+        document.getElementById('authorize_button').innerText = 'Refresh';
+      }
+      
+      function onSignout() {
+        document.getElementById('authorize_button').innerText = 'Authorize';
+        document.getElementById('signout_button').style.visibility = 'hidden';
+        document.getElementById('btn_reportar').disabled = true;
+        document.getElementById('btn_sc').disabled = true;
+      }

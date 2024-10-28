@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Acta Laboral by Anita Juarez v0.9</title>
+  <title>Acta Laboral by Anita Juarez v1.0</title>
 
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -16,7 +19,7 @@
 
   <div class="divisionPrincipal" >
     
-    <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit?gid=406537325#gid=406537325">Cuaderno de Acta byAnitaJuarez</a>
+    <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit?gid=0#gid=0">Cuaderno de Acta byAnitaJuarez</a>
     <br>
 
     <!--Autentificacion-->
@@ -39,8 +42,10 @@
           <option value="2">Meli</option>
           <option value="9">Pela</option>
           <option value="10">Eli</option>
-          <option value="20">Cande</option>
-          <option value="22">Marti</option>
+          <option value="17">Marti, Admin</option>
+          <option value="18">Marti, Prod. y Serv.</option>
+          <option value="22">Cande</option>
+          <option value="Si">Sil</option>
           <option value="29">Mari</option>
           <option value="30">Gabi</option>
           <option value="31">Dennis</option>
@@ -59,8 +64,10 @@
         <option value="2">Meli</option>
         <option value="9">Pela</option>
         <option value="10">Eli</option>
-        <option value="20">Cande</option>
-        <option value="22">Marti</option>
+        <option value="17">Marti, Admin</option>
+        <option value="18">Marti, Prod. y Serv.</option>
+        <option value="22">Cande</option>
+        <option value="Si">Sil</option>
         <option value="29">Mari</option>
         <option value="30">Gabi</option>
         <option value="31">Dennis</option>
@@ -74,8 +81,10 @@
         <option value="2">Meli</option>
         <option value="9">Pela</option>
         <option value="10">Eli</option>
-        <option value="20">Cande</option>
-        <option value="22">Marti</option>
+        <option value="17">Marti, Admin</option>
+        <option value="18">Marti, Prod. y Serv.</option>
+        <option value="22">Cande</option>
+        <option value="Si">Sil</option>
         <option value="29">Mari</option>
         <option value="30">Gabi</option>
         <option value="31">Dennis</option>
@@ -89,19 +98,12 @@
       <br>
       <button type="button" id="btn_sc" onclick='FlashPantalla("Aún no se ha configurado esta función")' disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
     </div>
-
-    <div class="separaciones" id="ocultada" hidden>
-      <strong>Ultimas Cargas</strong> <br>
-      <div class="UltimasCargas"> 
-        <pr id="previews">Conectate para ver los ultimos reportes</pr>
-      </div>
-    </div>
   </div>
 </body>
 
 <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
 <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-<script async defer src="js/autho.js"></script>
+<script async defer src="js/autho.js?v=<?php echo time(); ?>"></script>
 <script async defer src="js/Personalizacion.js"></script>
 <script async defer src="js/Cargas.js"></script>
 </html>
