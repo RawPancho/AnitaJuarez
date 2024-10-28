@@ -11,12 +11,12 @@
       document.getElementById('gapi').addEventListener('load',gapiLoaded);
       document.getElementById('gis').addEventListener('load',gisLoaded);
 
-      document.getElementById('authorize_button').style.visibility = 'hidden';
-      document.getElementById('signout_button').style.visibility = 'hidden';
+      document.getElementById('authorize_button').style.display = 'inline';
+      document.getElementById('signout_button').style.display = 'none';
 
       window.onload = function() {
         document.getElementById('authorize_button').innerText = 'Autorizar';
-        document.getElementById('signout_button').style.visibility = 'hidden';
+        document.getElementById('signout_button').style.display = 'none';
       };
    
       function gapiLoaded() {
@@ -52,7 +52,7 @@
        */
       function maybeEnableButtons() {
         if (gapiInited && gisInited) {
-          document.getElementById('authorize_button').style.visibility = 'visible';
+          document.getElementById('authorize_button').style.display = 'inline';
         }
       }
       /**
@@ -110,13 +110,13 @@
         await muestraDeActa();
         document.getElementById('btn_reportar').disabled = false;
         document.getElementById('btn_sc').disabled = false;
-        document.getElementById('signout_button').style.visibility = 'visible';
-        document.getElementById('authorize_button').innerText = 'Refresh';
+        document.getElementById('signout_button').style.display = 'inline';
+        document.getElementById('authorize_button').style.display = 'none';
       }
       
       function onSignout() {
-        document.getElementById('authorize_button').innerText = 'Autorizar';
-        document.getElementById('signout_button').style.visibility = 'hidden';
+        document.getElementById('authorize_button').style.display = 'inline';
+        document.getElementById('signout_button').style.display = 'none';
         document.getElementById('btn_reportar').disabled = true;
         document.getElementById('btn_sc').disabled = true;
       }
