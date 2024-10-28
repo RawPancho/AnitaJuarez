@@ -1,5 +1,4 @@
 
-
 const HizoSc = document.getElementById('pHizo_sc');
 const VendioSc = document.getElementById('pVendio_sc');
 const txtClienteSc = document.getElementById('txt_Cliente_sc');
@@ -12,7 +11,7 @@ async function muestraDeActa() {
   try {
     response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SHEETSID,
-      range: 'Acta Principal!A2:D5',
+      range: 'Acta Principal!A2:C5',
     });
   } catch (err) {
     console.error(err)
@@ -46,21 +45,31 @@ async function Reportar() {
     return;
   }
 
+  function formatearFecha(fecha) {
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
+    const año = fecha.getFullYear();
+    const horas = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    const segundos = String(fecha.getSeconds()).padStart(2, '0');
+    
+    return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
+}
+
   const actualizar = [
     txtReporte,
     Professional,
-    new Date().toISOString(), // Formato ISO para la fecha
-    new Date().toLocaleTimeString(), // Hora en formato local
+    fecha,
   ];
 
   try {
     await gapi.client.sheets.spreadsheets.values.append({
       spreadsheetId: SHEETSID,
-      range: 'Acta Principal!A:D', // Ajusta este rango según tu necesidad
+      range: 'Acta Principal!A:C', // Ajusta este rango según tu necesidad
       valueInputOption: 'USER_ENTERED',
       insertDataOption: 'INSERT_ROWS',
       resource: {
-        values: [actualizar], // Asegúrate de que sea un array de arrays
+        values: [actualizar],
       },
     });
     FlashPantalla("Reporte Enviado con Exito");

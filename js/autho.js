@@ -14,6 +14,12 @@
       document.getElementById('authorize_button').style.visibility = 'hidden';
       document.getElementById('signout_button').style.visibility = 'hidden';
 
+      window.onload = function() {
+        document.getElementById('authorize_button').innerText = 'Autorizar';
+        document.getElementById('signout_button').style.visibility = 'hidden';
+        FlashPantalla('Dale Basura!!');
+      };
+   
       function gapiLoaded() {
         gapi.load('client', initializeGapiClient);
       }
@@ -110,7 +116,7 @@
       }
       
       function onSignout() {
-        document.getElementById('authorize_button').innerText = 'Authorize';
+        document.getElementById('authorize_button').innerText = 'Autorizar';
         document.getElementById('signout_button').style.visibility = 'hidden';
         document.getElementById('btn_reportar').disabled = true;
         document.getElementById('btn_sc').disabled = true;
