@@ -26,7 +26,10 @@
     <button id="authorize_button" class="spaced btn btn-primary" onclick="handleAuthClick()">Autorizar</button>
     <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()">Desvincular</button>
 
-    <br>
+  </div>
+    <br><div class="container">
+    
+      <div class="left-column">      
     <div class="separaciones">
       
         <label for="txt_reporte">Reportar en el acta</label>
@@ -100,11 +103,152 @@
       <button type="button" id="btn_sc" onclick="servicioCompartido()" disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
     </div>
   </div>
+  <div class="right-column">
+    <!-- Aquí puedes poner tus primeras cargas o dejarlo como espacio vacío por ahora -->
+     <div class="separaciones">
+      <strong>Ultimas Cargas en Acta</strong> <br>
+      <div id="contenedorCeldas" class="tabla-acta">
+      <div class="tabla-acta">
+        <div class="celda-acta encabezado">Entrada</div>
+        <div class="celda-acta encabezado">Profesional</div>
+        <div class="celda-acta encabezado">Fecha</div>
+        <div class="celda-acta encabezado">Hora</div>
+      </div>
+      </div>
+     </div>
+  </div>
+</div>
+
 </body>
 
 <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
 <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-<script async defer src="js/autho.js?v=<?php echo time(); ?>"></script>
+
+<script type="text/javascript">
+      const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
+      const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
+      const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
+      const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+      let tokenClient;
+      let gapiInited = false;
+      let gisInited = false;
+
+      document.getElementById('gapi').addEventListener('load',gapiLoaded);
+      document.getElementById('gis').addEventListener('load',gisLoaded);
+
+      document.getElementById('authorize_button').style.display = 'inline';
+      document.getElementById('signout_button').style.display = 'none';
+
+      window.onload = function() {
+        document.getElementById('authorize_button').innerText = 'Autorizar';
+        document.getElementById('signout_button').style.display = 'none';
+      };
+   
+      function gapiLoaded() {
+        gapi.load('client', initializeGapiClient);
+      }
+
+      async function initializeGapiClient() {
+        await gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: [DISCOVERY_DOC],
+        });
+        gapiInited = true;
+        maybeEnableButtons();
+        checkStoredToken();
+      }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: '', // defined later
+        });
+        gisInited = true;
+        maybeEnableButtons();
+        
+      }
+
+      /**
+       * Enables user interaction after all libraries are loaded.
+       */
+      function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+          document.getElementById('authorize_button').style.display = 'inline';
+        }
+      }
+      /**
+       *  Sign in the user upon button click.
+       */
+      function handleAuthClick() {
+        tokenClient.callback = async (resp) => {
+          if (resp.error !== undefined) {
+            throw (resp);
+          }
+          saveToken();
+          onAuthSuccess();
+        };
+
+        if (gapi.client.getToken() === null) {
+          // Prompt the user to select a Google Account and ask for consent to share their data
+          // when establishing a new session.
+          tokenClient.requestAccessToken({prompt: 'consent'});
+        } else {
+          // Skip display of account chooser and consent dialog for an existing session.
+          tokenClient.requestAccessToken({prompt: ''});
+        }
+      }
+
+      /**
+       *  Sign out the user upon button click.
+       */
+      function handleSignoutClick() {
+        const token = gapi.client.getToken();
+        if (token !== null) {
+          google.accounts.oauth2.revoke(token.access_token);
+          gapi.client.setToken('');
+          localStorage.removeItem('gapiToken'); // Elimina el token guardado
+          onSignout();
+        }
+      }
+
+      function saveToken() {
+        const token = gapi.client.getToken();
+        if (token) {
+          localStorage.setItem('gapiToken', JSON.stringify(token));
+        }
+      }
+      
+      // Función para verificar y cargar el token guardado
+      function checkStoredToken() {
+        const savedToken = JSON.parse(localStorage.getItem('gapiToken'));
+        if (savedToken) {
+          gapi.client.setToken(savedToken);
+          onAuthSuccess();
+        }
+      }
+
+      async function onAuthSuccess() {
+        await muestraDeActa();
+        document.getElementById('btn_reportar').disabled = false;
+        document.getElementById('btn_sc').disabled = false;
+        document.getElementById('signout_button').style.display = 'inline';
+        document.getElementById('authorize_button').style.display = 'none';
+      }
+      
+      function onSignout() {
+        document.getElementById('authorize_button').style.display = 'inline';
+        document.getElementById('signout_button').style.display = 'none';
+        document.getElementById('btn_reportar').disabled = true;
+        document.getElementById('btn_sc').disabled = true;
+      }
+
+</script>
 <script async defer src="js/Personalizacion.js?v=<?php echo time(); ?>"></script>
 <script async defer src="js/Cargas.js?v=<?php echo time(); ?>"></script>
 </html>

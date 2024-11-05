@@ -1,30 +1,60 @@
-let PrimerPreview
+let PrimerPreview;
+
 async function muestraDeActa() {
   let response;
   try {
     response = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SHEETSID,
-      range: 'Acta Principal!A2:D5',
+      range: 'Acta Principal!A2:D', // Obtén todas las filas desde A2 hasta el final
     });
   } catch (err) {
-    console.error(err)
-  }
-  const range = response.result;
-  if (!range || !range.values || range.values.length == 0) {
-    console.warn("No hay entradas cargadas.")
+    console.error(err);
     return;
   }
-  PrimerPreview = [];
-  range.values.forEach((fila) =>{
-    const filasActa = {
-      entrada: fila[0],
-      profesional: fila[1],
-      fecha: fila[2],
-      hora: fila[3],
-    };
-    PrimerPreview.push(filasActa);
- } );
- console.log(PrimerPreview);
+
+  const range = response.result;
+  if (!range || !range.values || range.values.length === 0) {
+    console.warn("No hay entradas cargadas.");
+    return;
+  }
+  // Tomar las últimas 5 filas
+  const ultimasFilas = range.values.slice(-5);
+  const contenedor = document.getElementById('contenedorCeldas');
+  contenedor.innerHTML = ""; // Limpia el contenedor antes de agregar nuevos elementos
+
+  // Crear encabezados (solo una vez)
+  const encabezados = ['Entrada', 'Profesional', 'Fecha', 'Hora'];
+  encabezados.forEach(texto => {
+    const encabezadoCelda = document.createElement('div');
+    encabezadoCelda.classList.add('celda-acta', 'encabezado');
+    encabezadoCelda.textContent = texto;
+    contenedor.appendChild(encabezadoCelda);
+  });
+
+  // Añadir las filas de datos
+  ultimasFilas.forEach((fila) => {
+    const entradaCelda = document.createElement('div');
+    entradaCelda.classList.add('celda-acta');
+    entradaCelda.textContent = fila[0];
+
+    const profesionalCelda = document.createElement('div');
+    profesionalCelda.classList.add('celda-acta');
+    profesionalCelda.textContent = fila[1];
+
+    const fechaCelda = document.createElement('div');
+    fechaCelda.classList.add('celda-acta');
+    fechaCelda.textContent = fila[2];
+
+    const horaCelda = document.createElement('div');
+    horaCelda.classList.add('celda-acta');
+    horaCelda.textContent = fila[3];
+
+    // Añadir las celdas al contenedor
+    contenedor.appendChild(entradaCelda);
+    contenedor.appendChild(profesionalCelda);
+    contenedor.appendChild(fechaCelda);
+    contenedor.appendChild(horaCelda);
+  });
 }
 
 async function Reportar() {
@@ -60,6 +90,7 @@ async function Reportar() {
     document.getElementById('pReportarID').value = '';
     document.getElementById('txt_reporte').value = '';
     document.getElementById('pReportar').value = '';
+    muestraDeActa();
   } catch (err) {
     
     FlashPantalla("Error al enviar el reporte, reinicia la pagina o intente más tarde");
@@ -108,6 +139,7 @@ async function servicioCompartido() {
     document.getElementById('pHizo_sc').value = '';
     document.getElementById('txt_sc').value = '';
     document.getElementById('txt_Cliente_sc').value = '';
+    muestraDeActa();
   } catch (err) {
     
     FlashPantalla("Error al cargar el Servicio Compartido, reinicia la pagina o intente más tarde");

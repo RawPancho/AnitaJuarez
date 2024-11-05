@@ -1,3 +1,46 @@
+
+.tabla-acta {
+  display: grid;
+  grid-template-columns: 3fr 1fr 0.6fr 0.6fr; /* Ajusta el tamaño de cada columna */
+  gap: 5px;;
+}
+
+.celda-acta {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  font-size: 14px;
+}
+
+.encabezado {
+  font-weight: bold;
+  padding: 10px;
+  background-color: #f5f5f5;
+  font-size: 14px;
+}
+
+/* Configuración del contenedor principal */
+.container {
+  display: flex;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .container {
+    display: block; /* Cambia a bloque para que cada columna ocupe toda la ancho */
+  }
+
+  .right-column {
+    display: none; /* Oculta la columna derecha en pantallas pequeñas */
+  }
+}
+
+/* Configuración de cada columna */
+.left-column, .right-column {
+  width: 50%; /* Cada columna ocupa el 50% del ancho */
+  padding: 20px; /* Opcional, agrega algo de espacio interno */
+  
+}
+
 /* Estilo para el cuerpo */
 .body {
     background-color: #e9f8ff;
@@ -9,7 +52,7 @@
   }
   
   /* División principal */
-  .divisionPrincipal, .UltimasCargas {
+  .divisionPrincipal {
     margin: 16px;
     box-sizing: border-box;
     padding: 16px;
