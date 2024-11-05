@@ -1,5 +1,6 @@
 function checkOrientation() {
     const container = document.querySelector('.container');
+    const leftColumn = document.querySelector('.left-column');
     const rightColumn = document.querySelector('.right-column');
 
     // Verifica si la pantalla está en modo horizontal
@@ -7,10 +8,12 @@ function checkOrientation() {
         // Muestra la columna derecha en modo horizontal
         container.style.display = 'flex'; // o 'block' dependiendo de cómo quieras mostrarlo
         rightColumn.style.display = 'block'; // Muestra la columna derecha
+        leftColumn.style.flex = '1';
     } else {
         // Oculta la columna derecha en modo vertical
         container.style.display = 'block';
         rightColumn.style.display = 'none'; // Oculta la columna derecha
+        leftColumn.style.flex = '1';
     }
 }
 // Llama a la función al cargar la página
