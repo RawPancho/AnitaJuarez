@@ -24,15 +24,6 @@
   display: flex;
   width: 100%;
 }
-@media (max-width: 768px) {
-  .container {
-    display: block; /* Cambia a bloque para que cada columna ocupe toda la ancho */
-  }
-
-  .right-column {
-    display: none; /* Oculta la columna derecha en pantallas pequeñas */
-  }
-}
 
 /* Configuración de cada columna */
 .left-column, .right-column {
