@@ -27,7 +27,6 @@
 
 /* Configuración de cada columna */
 .left-column, .right-column {
-  width: 50%; /* Cada columna ocupa el 50% del ancho */
   padding: 20px; /* Opcional, agrega algo de espacio interno */
   
 }
