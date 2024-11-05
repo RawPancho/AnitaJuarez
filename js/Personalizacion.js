@@ -8,7 +8,7 @@ function checkOrientation() {
         // Muestra la columna derecha en modo horizontal
         container.style.display = 'flex'; // o 'block' dependiendo de cómo quieras mostrarlo
         rightColumn.style.display = 'block'; // Muestra la columna derecha
-        leftColumn.style.width = '50%';
+        leftColumn.style.flex = '1';
     } else {
         // Oculta la columna derecha en modo vertical
         container.style.display = 'block';
