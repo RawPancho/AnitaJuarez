@@ -25,10 +25,6 @@
   width: 100%;
 }
 
-.left-column {
-  flex: 1; /* Permite que la columna izquierda ocupe todo el espacio disponible */
-  /* Otras propiedades como padding, margen, etc. */
-}
 /* Configuración de cada columna */
 .left-column, .right-column {
   width: 50%; /* Cada columna ocupa el 50% del ancho */

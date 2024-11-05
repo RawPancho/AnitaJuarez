@@ -8,12 +8,12 @@ function checkOrientation() {
         // Muestra la columna derecha en modo horizontal
         container.style.display = 'flex'; // o 'block' dependiendo de cómo quieras mostrarlo
         rightColumn.style.display = 'block'; // Muestra la columna derecha
-        leftColumn.style.flex = '1';
+        leftColumn.style.width = '100%';
     } else {
         // Oculta la columna derecha en modo vertical
         container.style.display = 'block';
         rightColumn.style.display = 'none'; // Oculta la columna derecha
-        leftColumn.style.flex = '1';
+        leftColumn.style.width = '50%';
     }
 }
 // Llama a la función al cargar la página
