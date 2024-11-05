@@ -1,3 +1,24 @@
+function checkOrientation() {
+    const container = document.querySelector('.container');
+    const rightColumn = document.querySelector('.right-column');
+
+    // Verifica si la pantalla está en modo horizontal
+    if (window.innerWidth > window.innerHeight) {
+        // Muestra la columna derecha en modo horizontal
+        container.style.display = 'flex'; // o 'block' dependiendo de cómo quieras mostrarlo
+        rightColumn.style.display = 'block'; // Muestra la columna derecha
+    } else {
+        // Oculta la columna derecha en modo vertical
+        container.style.display = 'block';
+        rightColumn.style.display = 'none'; // Oculta la columna derecha
+    }
+}
+// Llama a la función al cargar la página
+window.addEventListener('load', checkOrientation);
+
+// Llama a la función cada vez que se redimensione la ventana
+window.addEventListener('resize', checkOrientation);
+
 //Auto adjust textboxes width
 var input = document.querySelector('input'); // get the input element
 input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
