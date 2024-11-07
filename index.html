@@ -235,6 +235,7 @@
 
       async function onAuthSuccess() {
         await muestraDeActa();
+        FlashPantalla("Conectado correctamente");
         document.getElementById('btn_reportar').disabled = false;
         document.getElementById('btn_sc').disabled = false;
         document.getElementById('signout_button').style.display = 'inline';

@@ -8,12 +8,14 @@ async function muestraDeActa() {
       range: 'Acta Principal!A2:D', // Obtén todas las filas desde A2 hasta el final
     });
   } catch (err) {
+    FlashPantalla("No pudo realizarse la conexión. Desvinculate y vuelve a solicitar Autorización");
     console.error(err);
     return;
   }
 
   const range = response.result;
   if (!range || !range.values || range.values.length === 0) {
+    FlashPantalla("No hay entradas cargadas");
     console.warn("No hay entradas cargadas.");
     return;
   }
