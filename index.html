@@ -19,7 +19,7 @@
 
   <div class="divisionPrincipal" >
     
-    <a href="https://docs.google.com/spreadsheets/d/1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM/edit?gid=0#gid=0">Cuaderno de Acta byAnitaJuarez</a>
+    <strong>Cuaderno de Acta byAnitaJuarez</strong>
     <br>
 
     <!--Autentificacion-->
@@ -124,6 +124,7 @@
 <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
 <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
 
+<!--Autho-->
 <script type="text/javascript">
       const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
       const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
@@ -252,6 +253,249 @@
       }
 
 </script>
-<script async defer src="js/Personalizacion.js?v=<?php echo time(); ?>"></script>
-<script async defer src="js/Cargas.js?v=<?php echo time(); ?>"></script>
+
+<!--Cargas-->
+<script type="text/javascript">
+let PrimerPreview;
+
+async function muestraDeActa() {
+  let response;
+  try {
+    response = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SHEETSID,
+      range: 'Acta Principal!A2:D', // Obtén todas las filas desde A2 hasta el final
+    });
+  } catch (err) {
+    FlashPantalla("No pudo realizarse la conexión. Desvinculate y vuelve a solicitar Autorización");
+    console.error(err);
+    return;
+  }
+
+  const range = response.result;
+  if (!range || !range.values || range.values.length === 0) {
+    FlashPantalla("No hay entradas cargadas");
+    console.warn("No hay entradas cargadas.");
+    return;
+  }
+  // Tomar las últimas 5 filas
+  const ultimasFilas = range.values.slice(-5);
+  const contenedor = document.getElementById('contenedorCeldas');
+  contenedor.innerHTML = ""; // Limpia el contenedor antes de agregar nuevos elementos
+
+  // Crear encabezados (solo una vez)
+  const encabezados = ['Entrada', 'Profesional', 'Fecha', 'Hora'];
+  encabezados.forEach(texto => {
+    const encabezadoCelda = document.createElement('div');
+    encabezadoCelda.classList.add('celda-acta', 'encabezado');
+    encabezadoCelda.textContent = texto;
+    contenedor.appendChild(encabezadoCelda);
+  });
+
+  // Añadir las filas de datos
+  ultimasFilas.forEach((fila) => {
+    const entradaCelda = document.createElement('div');
+    entradaCelda.classList.add('celda-acta');
+    entradaCelda.textContent = fila[0];
+
+    const profesionalCelda = document.createElement('div');
+    profesionalCelda.classList.add('celda-acta');
+    profesionalCelda.textContent = fila[1];
+
+    const fechaCelda = document.createElement('div');
+    fechaCelda.classList.add('celda-acta');
+    fechaCelda.textContent = fila[2];
+
+    const horaCelda = document.createElement('div');
+    horaCelda.classList.add('celda-acta');
+    horaCelda.textContent = fila[3];
+
+    // Añadir las celdas al contenedor
+    contenedor.appendChild(entradaCelda);
+    contenedor.appendChild(profesionalCelda);
+    contenedor.appendChild(fechaCelda);
+    contenedor.appendChild(horaCelda);
+  });
+}
+
+async function Reportar() {
+  const txtReporte = document.getElementById('txt_reporte').value; // Obtener el valor
+  const selectElement = document.getElementById('pReportar');
+  const Professional = selectElement.selectedOptions[0].text;
+  const fechaActual = new Date();
+  const [fechaCorta, hora] = formatearFecha(fechaActual);
+
+  // Verificar si los campos están vacíos
+  if (!txtReporte || !Professional || Professional === "Selecciona") {
+    FlashPantalla("Por favor, complete todos los campos antes de reportar.");
+    return;
+  }
+  const actualizar = [
+    txtReporte,
+    Professional,
+    fechaCorta,
+    hora,
+  ];
+
+  try {
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SHEETSID,
+      range: 'Acta Principal!A:D', // Ajusta este rango según tu necesidad
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+        values: [actualizar],
+      },
+    });
+    FlashPantalla("Reporte Enviado con Exito");
+    document.getElementById('pReportarID').value = '';
+    document.getElementById('txt_reporte').value = '';
+    document.getElementById('pReportar').value = '';
+    muestraDeActa();
+  } catch (err) {
+    
+    FlashPantalla("Error al enviar el reporte, reinicia la pagina o intente más tarde");
+    console.error("Error al enviar el reporte:", err);
+  }
+}
+
+async function servicioCompartido() {
+  
+  const pVendioSC = document.getElementById('pVendio_sc');
+  const VendioSc = pVendioSC.selectedOptions[0].text;
+  const pHizoSC = document.getElementById('pHizo_sc');
+  const HizoSc = pHizoSC.selectedOptions[0].text;
+  const ClienteSc = document.getElementById('txt_Cliente_sc').value;
+  const Servicio = document.getElementById('txt_sc').value;
+  const fechaActual = new Date();
+  const [fechaCorta, hora] = formatearFecha(fechaActual);
+
+  // Verificar si los campos están vacíos
+  if (!HizoSc || !VendioSc || !ClienteSc  || !Servicio || !VendioSc === "Selecciona" || HizoSc === "Selecciona") {
+    FlashPantalla("Por favor, complete todos los campos antes de reportar.");
+    return;
+  }
+  const actualizar = [
+    VendioSc,
+    HizoSc,
+    Servicio,
+    fechaCorta,
+    ClienteSc,
+  ];
+
+  try {
+    await gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: SHEETSID,
+      range: 'Servicios Compartidos!A:E', // Ajusta este rango según tu necesidad
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+        values: [actualizar],
+      },
+    });
+    FlashPantalla("Servicio cargado con Exito");
+    document.getElementById('pVendioID').value = '';
+    document.getElementById('pVendio_sc').value = '';
+    document.getElementById('pHizoID').value = '';
+    document.getElementById('pHizo_sc').value = '';
+    document.getElementById('txt_sc').value = '';
+    document.getElementById('txt_Cliente_sc').value = '';
+    muestraDeActa();
+  } catch (err) {
+    
+    FlashPantalla("Error al cargar el Servicio Compartido, reinicia la pagina o intente más tarde");
+    console.error("Error al cargar el SC:", err);
+  }
+}
+function formatearFecha(fecha) {
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
+  const año = fecha.getFullYear();
+  const horas = String(fecha.getHours()).padStart(2, '0');
+  const minutos = String(fecha.getMinutes()).padStart(2, '0');
+  const segundos = String(fecha.getSeconds()).padStart(2, '0');
+  
+  return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
+}
+</script>
+
+<!--Personalizacion-->
+<script type="text/javascript">
+function checkOrientation() {
+    const container = document.querySelector('.container');
+    const leftColumn = document.querySelector('.left-column');
+    const rightColumn = document.querySelector('.right-column');
+
+    // Verifica si la pantalla está en modo horizontal
+    if (window.innerWidth > window.innerHeight) {
+        // Muestra la columna derecha en modo horizontal
+        container.style.display = 'flex'; // o 'block' dependiendo de cómo quieras mostrarlo
+        rightColumn.style.display = 'block'; // Muestra la columna derecha
+        leftColumn.style.flex = '1';
+    } else {
+        // Oculta la columna derecha en modo vertical
+        container.style.display = 'block';
+        rightColumn.style.display = 'none'; // Oculta la columna derecha
+        leftColumn.style.width = '100%';
+    }
+}
+// Llama a la función al cargar la página
+window.addEventListener('load', checkOrientation);
+
+// Llama a la función cada vez que se redimensione la ventana
+window.addEventListener('resize', checkOrientation);
+
+//Auto adjust textboxes width
+var input = document.querySelector('input'); // get the input element
+input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
+resizeInput.call(input); // immediately call the function
+function resizeInput() {
+  this.style.width = this.value.length + "ch";
+}
+      function FlashPantalla(message) {
+        const flashMessage = document.getElementById('flash-message');
+        flashMessage.textContent = message; // Cambiar el texto del mensaje
+        flashMessage.classList.remove('flash-hidden'); // Mostrar el mensaje
+        flashMessage.classList.add('flash-visible');
+    
+        // Ocultar el mensaje después de 3 segundos
+        setTimeout(() => {
+            flashMessage.classList.remove('flash-visible');
+            flashMessage.classList.add('flash-hidden');
+        }, 3000); // 3000 ms = 3 segundos
+    }
+
+    const profesionales = {
+      '1': 'Anita',
+      '2': 'Meli',
+      '9': 'Pela',
+      '10': 'Eli',
+      '22': 'Cande',
+      '17': 'Marti, Admin',
+      '18': 'Marti, Prod y Servicios',
+      'Si': 'Sil',
+      '29': 'Mari',
+      '30': 'Gabi',
+      '31': 'Dennis',
+      'Ja': 'Jari',
+  };
+  function handleAutocomplete(input) {
+    const inputVal = input.value.trim(); // Obtiene el valor ingresado, eliminando espacios
+    const select = input.previousElementSibling; // Obtiene el select anterior
+    const nombre = profesionales[inputVal]; // Obtiene el nombre del profesional basado en el número
+
+    if (nombre) {
+        select.value = inputVal; // Actualiza el valor del select si hay coincidencia
+    } else {
+        select.value = ''; // Limpia el select si no hay coincidencia
+    }
+}
+
+// Captura todos los inputs y les añade el evento
+const inputs = document.querySelectorAll('.input_profesional');
+inputs.forEach(input => {
+    input.addEventListener('input', function() {
+        handleAutocomplete(this);
+    });
+});
+</script>
 </html>
