@@ -161,9 +161,6 @@
         checkStoredToken();
       }
 
-      /**
-       * Callback after Google Identity Services are loaded.
-       */
       function gisLoaded() {
         tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: CLIENT_ID,
@@ -175,17 +172,12 @@
         
       }
 
-      /**
-       * Enables user interaction after all libraries are loaded.
-       */
       function maybeEnableButtons() {
         if (gapiInited && gisInited) {
           document.getElementById('authorize_button').style.display = 'inline';
         }
       }
-      /**
-       *  Sign in the user upon button click.
-       */
+       
       function handleAuthClick() {
         tokenClient.callback = async (resp) => {
           if (resp.error !== undefined) {
@@ -205,9 +197,6 @@
         }
       }
 
-      /**
-       *  Sign out the user upon button click.
-       */
       function handleSignoutClick() {
         const token = gapi.client.getToken();
         if (token !== null) {
@@ -236,6 +225,7 @@
 
       async function onAuthSuccess() {
         await muestraDeActa();
+        habilitarUso();
       }
       
       function onSignout() {
@@ -245,10 +235,14 @@
         document.getElementById('btn_sc').disabled = true;
       }
 
-</script>
+function habilitarUso(){
+        document.getElementById('btn_reportar').disabled = false;
+        document.getElementById('btn_sc').disabled = false;
+        document.getElementById('signout_button').style.display = 'inline';
+        document.getElementById('authorize_button').style.display = 'none';
+  FlashPantalla("Conectado correctamente");
+}
 
-<!--Cargas-->
-<script type="text/javascript">
 let PrimerPreview;
 
 async function muestraDeActa() {
@@ -270,13 +264,6 @@ async function muestraDeActa() {
     console.warn("No hay entradas cargadas.");
     return;
   }
-  
-  FlashPantalla("Conectado correctamente");
-        document.getElementById('btn_reportar').disabled = false;
-        document.getElementById('btn_sc').disabled = false;
-        document.getElementById('signout_button').style.display = 'inline';
-        document.getElementById('authorize_button').style.display = 'none';
-  
   // Tomar las últimas 5 filas
   const ultimasFilas = range.values.slice(-5);
   const contenedor = document.getElementById('contenedorCeldas');
@@ -402,7 +389,7 @@ async function servicioCompartido() {
     muestraDeActa();
   } catch (err) {
     
-    FlashPantalla("Error al cargar el Servicio Compartido, reinicia la pagina o intente más tarde");
+    FlashPantalla("Error al enviar, Desvincula y Conecta nuevamente, o intente mas tarde");
     console.error("Error al cargar el SC:", err);
   }
 }
