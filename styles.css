@@ -21,7 +21,7 @@
 
 /* Configuración del contenedor principal */
 .container {
-  display: flex;
+  display: hidden;
   width: 100%;
 }
 .left-column {

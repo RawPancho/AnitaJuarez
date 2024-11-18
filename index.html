@@ -18,16 +18,15 @@
   <div id="flash-message" class="flash-hidden"></div>
 
   <div class="divisionPrincipal" >
-    
     <strong>Cuaderno de Acta byAnitaJuarez</strong>
     <br>
 
     <!--Autentificacion-->
     <button id="authorize_button" class="spaced btn btn-primary" onclick="handleAuthClick()">Autorizar</button>
-    <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()">Desvincular</button>
+    <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()" display="none" >Cerrar sesión</button>
 
   </div>
-    <br><div class="container">
+    <br><div id="espacioDeTrabajo" class="container">
     
       <div class="left-column">      
     <div class="separaciones">
@@ -121,46 +120,52 @@
 
 </body>
 
-<script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
-<script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-
 <!--Autho-->
+
 <script type="text/javascript">
-      const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
-      const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
-      const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
-      const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-      const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+  const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
+  const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
+  const DISCOVERY_DOCS = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+  const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+  const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
+
+  const espacioDeTrabajo = document.getElementById('espacioDeTrabajo');
+  const authorizeButton = document.getElementById('authorize_button');
+  const signoutButton = document.getElementById('signout_button');
+  const btnReportar = document.getElementById('btn_reportar');
+  const btnSc = document.getElementById('btn_sc');
 
       let tokenClient;
       let gapiInited = false;
       let gisInited = false;
 
-      document.getElementById('gapi').addEventListener('load',gapiLoaded);
-      document.getElementById('gis').addEventListener('load',gisLoaded);
-
-      document.getElementById('authorize_button').style.display = 'inline';
+      document.getElementById('authorize_button').style.display = 'none';
       document.getElementById('signout_button').style.display = 'none';
 
-      window.onload = function() {
-        document.getElementById('authorize_button').innerText = 'Autorizar';
-        document.getElementById('signout_button').style.display = 'none';
-      };
-   
+      /**
+       * Callback after api.js is loaded.
+       */
       function gapiLoaded() {
         gapi.load('client', initializeGapiClient);
       }
 
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
       async function initializeGapiClient() {
         await gapi.client.init({
           apiKey: API_KEY,
-          discoveryDocs: [DISCOVERY_DOC],
+          discoveryDocs: [DISCOVERY_DOCS],
         });
         gapiInited = true;
         maybeEnableButtons();
-        checkStoredToken();
       }
 
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
       function gisLoaded() {
         tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: CLIENT_ID,
@@ -169,22 +174,28 @@
         });
         gisInited = true;
         maybeEnableButtons();
-        
       }
 
+      /**
+       * Enables user interaction after all libraries are loaded.
+       */
       function maybeEnableButtons() {
         if (gapiInited && gisInited) {
           document.getElementById('authorize_button').style.display = 'inline';
         }
       }
-       
+
+      /**
+       *  Sign in the user upon button click.
+       */
       function handleAuthClick() {
         tokenClient.callback = async (resp) => {
           if (resp.error !== undefined) {
             throw (resp);
           }
-          saveToken();
-          onAuthSuccess();
+          estaHabilitado(true);
+    FlashPantalla("Feliz Jornada!");
+          muestraDeActa();
         };
 
         if (gapi.client.getToken() === null) {
@@ -197,54 +208,27 @@
         }
       }
 
+      /**
+       *  Sign out the user upon button click.
+       */
       function handleSignoutClick() {
         const token = gapi.client.getToken();
         if (token !== null) {
           google.accounts.oauth2.revoke(token.access_token);
           gapi.client.setToken('');
-          localStorage.removeItem('gapiToken'); // Elimina el token guardado
-          onSignout();
+          estaHabilitado(false);
         }
       }
 
-      function saveToken() {
-        const token = gapi.client.getToken();
-        if (token) {
-          localStorage.setItem('gapiToken', JSON.stringify(token));
-        }
-      }
-      
-      // Función para verificar y cargar el token guardado
-      function checkStoredToken() {
-        const savedToken = JSON.parse(localStorage.getItem('gapiToken'));
-        if (savedToken) {
-          gapi.client.setToken(savedToken);
-          onAuthSuccess();
-        }
-      }
-
-      async function onAuthSuccess() {
-        await muestraDeActa();
-        habilitarUso();
-      }
-      
-      function onSignout() {
-        document.getElementById('authorize_button').style.display = 'inline';
-        document.getElementById('signout_button').style.display = 'none';
-        document.getElementById('btn_reportar').disabled = true;
-        document.getElementById('btn_sc').disabled = true;
-      }
-
-function habilitarUso(){
-        document.getElementById('btn_reportar').disabled = false;
-        document.getElementById('btn_sc').disabled = false;
-        document.getElementById('signout_button').style.display = 'inline';
-        document.getElementById('authorize_button').style.display = 'none';
-  FlashPantalla("Conectado correctamente");
-}
+  function estaHabilitado(vinCulado) {
+    authorizeButton.style.display = vinCulado ? 'none' : 'inline';
+    signoutButton.style.display = vinCulado ? 'inline' : 'none';
+    //espacioDeTrabajo.style.display = vinCulado ? 'flex' : 'hidden';
+    btnReportar.disabled = vinCulado ? false : true;
+    btnSc.disabled = vinCulado ? false : true;
+  } 
 
 let PrimerPreview;
-
 async function muestraDeActa() {
   let response;
   try {
@@ -346,7 +330,7 @@ async function Reportar() {
 }
 
 async function servicioCompartido() {
-  
+    
   const pVendioSC = document.getElementById('pVendio_sc');
   const VendioSc = pVendioSC.selectedOptions[0].text;
   const pHizoSC = document.getElementById('pHizo_sc');
@@ -404,7 +388,14 @@ function formatearFecha(fecha) {
   return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
 }
 </script>
-
+<!--
+<script async defer src="https://apis.google.com/js/api.js"
+onload="this.onload=function(){};handleClientLoad()"
+onreadystatechange="if (this.readyState === 'complete') this.onload()">
+</script>
+-->
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 <!--Personalizacion-->
 <script type="text/javascript">
 function checkOrientation() {
