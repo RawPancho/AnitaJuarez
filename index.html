@@ -20,10 +20,8 @@
   <div class="divisionPrincipal" >
     <strong>Cuaderno de Acta byAnitaJuarez</strong>
     <br>
-
-    <!--Autentificacion-->
     <button id="authorize_button" class="spaced btn btn-primary" onclick="handleAuthClick()">Autorizar</button>
-    <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()" display="none" >Cerrar sesión</button>
+    <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()">Cerrar sesión</button>
 
   </div>
     <br><div id="espacioDeTrabajo" class="container">
@@ -323,14 +321,14 @@ async function Reportar() {
     document.getElementById('pReportar').value = '';
     muestraDeActa();
   } catch (err) {
-    
+
     FlashPantalla("Error al enviar el reporte, reinicia la pagina o intente más tarde");
     console.error("Error al enviar el reporte:", err);
   }
 }
 
 async function servicioCompartido() {
-    
+
   const pVendioSC = document.getElementById('pVendio_sc');
   const VendioSc = pVendioSC.selectedOptions[0].text;
   const pHizoSC = document.getElementById('pHizo_sc');
@@ -372,7 +370,7 @@ async function servicioCompartido() {
     document.getElementById('txt_Cliente_sc').value = '';
     muestraDeActa();
   } catch (err) {
-    
+
     FlashPantalla("Error al enviar, Desvincula y Conecta nuevamente, o intente mas tarde");
     console.error("Error al cargar el SC:", err);
   }
@@ -384,19 +382,13 @@ function formatearFecha(fecha) {
   const horas = String(fecha.getHours()).padStart(2, '0');
   const minutos = String(fecha.getMinutes()).padStart(2, '0');
   const segundos = String(fecha.getSeconds()).padStart(2, '0');
-  
+
   return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
 }
 </script>
-<!--
-<script async defer src="https://apis.google.com/js/api.js"
-onload="this.onload=function(){};handleClientLoad()"
-onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
--->
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-<!--Personalizacion-->
+<!--Personalización-->
 <script type="text/javascript">
 function checkOrientation() {
     const container = document.querySelector('.container');
