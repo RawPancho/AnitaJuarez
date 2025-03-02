@@ -38,57 +38,23 @@
         <br>
         <select id="pReportar" class="list_profesional">
           <option value="">Selecciona</option>
-          <option value="1">Anita</option>
-          <option value="2">Meli</option>
-          <option value="9">Pela</option>
-          <option value="10">Eli</option>
-          <option value="17">Marti, Admin</option>
-          <option value="18">Marti, Prod. y Serv.</option>
-          <option value="22">Cande</option>
-          <option value="Si">Sil</option>
-          <option value="29">Mari</option>
-          <option value="30">Gabi</option>
-          <option value="31">Dennis</option>
-          <option value="Ja">Jari</option>
         </select>
         <input id="pReportarID" type="text" class="input_profesional" placeholder="...o por ID" maxlength="2" />
         <br>   
           <button type="button" id="btn_reportar" onclick="Reportar()" style="width:75px" disabled="true">Enviar</button>
    
       </div>
-
-    <div class="separaciones">
+<!-- COMO QUE LOS SELECT TENGAN ESOS VALORES QUE CARGUE DESDE EL SHEETS-->
+    <div class="separaciones"> 
       <h3> Servicio Compartido</h3>  
       <select id="pVendio_sc" class="list_profesional">
         <option value="">Selecciona</option>
-        <option value="1">Anita</option>
-        <option value="2">Meli</option>
-        <option value="9">Pela</option>
-        <option value="10">Eli</option>
-        <option value="18">Marti, Prod. y Serv.</option>
-        <option value="22">Cande</option>
-        <option value="Si">Sil</option>
-        <option value="29">Mari</option>
-        <option value="30">Gabi</option>
-        <option value="31">Dennis</option>
-        <option value="Ja">Jari</option>
       </select>
       <input id="pVendioID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
       <label for="pVendioID">Quien lo vendió</label>
       <br>
       <select id="pHizo_sc" class="list_profesional">
         <option value="">Selecciona</option>
-        <option value="1">Anita</option>
-        <option value="2">Meli</option>
-        <option value="9">Pela</option>
-        <option value="10">Eli</option>
-        <option value="18">Marti, Prod. y Serv.</option>
-        <option value="22">Cande</option>
-        <option value="Si">Sil</option>
-        <option value="29">Mari</option>
-        <option value="30">Gabi</option>
-        <option value="31">Dennis</option>
-        <option value="Ja">Jari</option>
       </select>
       <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
       <label for="pHizoID">Quien lo hizo</label>
@@ -120,6 +86,9 @@
 
 <!--Autho-->
 
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
 <script type="text/javascript">
 
   const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
@@ -140,14 +109,12 @@
 
       document.getElementById('authorize_button').style.display = 'none';
       document.getElementById('signout_button').style.display = 'none';
-
       /**
        * Callback after api.js is loaded.
        */
       function gapiLoaded() {
         gapi.load('client', initializeGapiClient);
       }
-
       /**
        * Callback after the API client is loaded. Loads the
        * discovery doc to initialize the API.
@@ -160,7 +127,6 @@
         gapiInited = true;
         maybeEnableButtons();
       }
-
       /**
        * Callback after Google Identity Services are loaded.
        */
@@ -173,7 +139,6 @@
         gisInited = true;
         maybeEnableButtons();
       }
-
       /**
        * Enables user interaction after all libraries are loaded.
        */
@@ -182,7 +147,6 @@
           document.getElementById('authorize_button').style.display = 'inline';
         }
       }
-
       /**
        *  Sign in the user upon button click.
        */
@@ -191,24 +155,18 @@
           if (resp.error !== undefined) {
             throw (resp);
           }
+          PrecargaDatos();
           estaHabilitado(true);
     FlashPantalla("Feliz Jornada!");
-          muestraDeActa();
         };
 
         if (gapi.client.getToken() === null) {
-          // Prompt the user to select a Google Account and ask for consent to share their data
-          // when establishing a new session.
           tokenClient.requestAccessToken({prompt: 'consent'});
         } else {
-          // Skip display of account chooser and consent dialog for an existing session.
           tokenClient.requestAccessToken({prompt: ''});
         }
       }
 
-      /**
-       *  Sign out the user upon button click.
-       */
       function handleSignoutClick() {
         const token = gapi.client.getToken();
         if (token !== null) {
@@ -226,11 +184,49 @@
     btnSc.disabled = vinCulado ? false : true;
   } 
 
-let PrimerPreview;
-async function muestraDeActa() {
-  let response;
+let profesionales = {};
+async function PrecargaDatos() {
+  let responseProfes;
   try {
-    response = await gapi.client.sheets.spreadsheets.values.get({
+    responseProfes = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SHEETSID,
+      range: 'Lectura!A2:B', // Obtén todas las filas desde A2 hasta el final
+    });
+  } catch (err) {
+    FlashPantalla("No pudo realizarse la conexión para leer profesionales. Desvinculate y vuelve a solicitar Autorización");
+    console.error(err);
+    return;
+  }
+  const profs = responseProfes.result;
+  if (!profs || !profs.values || profs.values.length === 0) {
+    FlashPantalla("No hay profesionales cargadas");
+    console.warn("No hay profesionales cargadas.");
+    return;
+  }
+  
+  profesionales = {};  // Reiniciamos por si ya había datos previos
+    profs.values.forEach(row => {
+        profesionales[row[0]] = row[1];
+    });
+    
+    // Actualizamos los select que tienen la clase "list_profesional"
+    const selects = document.querySelectorAll('.list_profesional');
+    selects.forEach(select => {
+      
+  select.innerHTML = '<option value="">Selecciona</option>';
+
+for (const [id, nombre] of Object.entries(profesionales)) {
+  const option = document.createElement('option');
+  option.value = id;
+  option.textContent = nombre;
+  select.appendChild(option);
+}
+});
+
+  //Muestra de Acta
+  let responseActa;
+  try {
+    responseActa = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SHEETSID,
       range: 'Acta Principal!A2:D', // Obtén todas las filas desde A2 hasta el final
     });
@@ -240,7 +236,7 @@ async function muestraDeActa() {
     return;
   }
 
-  const range = response.result;
+  const range = responseActa.result;
   if (!range || !range.values || range.values.length === 0) {
     FlashPantalla("No hay entradas cargadas");
     console.warn("No hay entradas cargadas.");
@@ -319,14 +315,13 @@ async function Reportar() {
     document.getElementById('pReportarID').value = '';
     document.getElementById('txt_reporte').value = '';
     document.getElementById('pReportar').value = '';
-    muestraDeActa();
+    PrecargaDatos();
   } catch (err) {
 
     FlashPantalla("Error al enviar el reporte, reinicia la pagina o intente más tarde");
     console.error("Error al enviar el reporte:", err);
   }
 }
-
 async function servicioCompartido() {
 
   const pVendioSC = document.getElementById('pVendio_sc');
@@ -368,7 +363,7 @@ async function servicioCompartido() {
     document.getElementById('pHizo_sc').value = '';
     document.getElementById('txt_sc').value = '';
     document.getElementById('txt_Cliente_sc').value = '';
-    muestraDeActa();
+    PrecargaDatos();
   } catch (err) {
 
     FlashPantalla("Error al enviar, Desvincula y Conecta nuevamente, o intente mas tarde");
@@ -385,11 +380,9 @@ function formatearFecha(fecha) {
 
   return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
 }
-</script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-<!--Personalización-->
-<script type="text/javascript">
+
+//--Personalización--
+
 function checkOrientation() {
     const container = document.querySelector('.container');
     const leftColumn = document.querySelector('.left-column');
@@ -410,6 +403,7 @@ function checkOrientation() {
 }
 // Llama a la función al cargar la página
 window.addEventListener('load', checkOrientation);
+window.addEventListener('load', handleAuthClick);
 
 // Llama a la función cada vez que se redimensione la ventana
 window.addEventListener('resize', checkOrientation);
@@ -433,39 +427,26 @@ function resizeInput() {
             flashMessage.classList.add('flash-hidden');
         }, 3000); // 3000 ms = 3 segundos
     }
+    
 
-    const profesionales = {
-      '1': 'Anita',
-      '2': 'Meli',
-      '9': 'Pela',
-      '10': 'Eli',
-      '22': 'Cande',
-      '17': 'Marti, Admin',
-      '18': 'Marti, Prod y Servicios',
-      'Si': 'Sil',
-      '29': 'Mari',
-      '30': 'Gabi',
-      '31': 'Dennis',
-      'Ja': 'Jari',
-  };
+  // Función de autocompletado para los inputs que tienen la clase "input_profesional"
   function handleAutocomplete(input) {
-    const inputVal = input.value.trim(); // Obtiene el valor ingresado, eliminando espacios
-    const select = input.previousElementSibling; // Obtiene el select anterior
-    const nombre = profesionales[inputVal]; // Obtiene el nombre del profesional basado en el número
-
+    const inputVal = input.value.trim(); // Valor ingresado sin espacios adicionales
+    const select = input.previousElementSibling; // Se asume que el select está justo antes del input
+    const nombre = profesionales[inputVal]; // Busca el profesional por ID en el objeto global
     if (nombre) {
-        select.value = inputVal; // Actualiza el valor del select si hay coincidencia
+      select.value = inputVal; // Si hay coincidencia, asigna el ID al select
     } else {
-        select.value = ''; // Limpia el select si no hay coincidencia
+      select.value = ''; // Si no coincide, limpia el select
     }
-}
-
-// Captura todos los inputs y les añade el evento
-const inputs = document.querySelectorAll('.input_profesional');
-inputs.forEach(input => {
+  }
+  // Capturamos los inputs de autocompletado y agregamos el evento "input"
+  const inputs = document.querySelectorAll('.input_profesional');
+  inputs.forEach(input => {
     input.addEventListener('input', function() {
-        handleAutocomplete(this);
+      handleAutocomplete(this);
     });
-});
+  });
+
 </script>
 </html>
