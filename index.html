@@ -56,32 +56,57 @@
         <label for="pReportar">Emisor</label>
         <br>
         <select id="pReportar" class="list_profesional">
-        <option value="">Selecciona</option>
+          <option value="">Selecciona</option>
+          <option value="1">Anita</option>
+          <option value="2">Meli</option>
+          <option value="9">Pela</option>
+          <option value="10">Eli</option>
+          <option value="17">Marti, Admin</option>
+          <option value="18">Marti, Prod. y Serv.</option>
+          <option value="22">Cande</option>
+          <option value="Si">Sil</option>
+          <option value="29">Mari</option>
+          <option value="30">Gabi</option>
+          <option value="31">Dennis</option>
+          <option value="Ja">Jari</option>
         </select>
         <input id="pReportarID" type="text" class="input_profesional" placeholder="...o por ID" maxlength="2" />
         <br>   
         <button type="button" id="btn_reportar" onclick="Reportar()" style="width:75px" disabled="true">Enviar</button>
       </div>
-    </div> 
 
-    <div class="right-column" id="muestrAtab1"></div>
-
-    </div>
-  </div>
-  <div class="tab-pane fade" id="tab2">
-    <div id="espacioDeTrabajo" class="container">
-    <div class="left-column">
-    <div class="separaciones"> 
-
+    <div class="separaciones">
       <h3> Servicio Compartido</h3>  
       <select id="pVendio_sc" class="list_profesional">
-      <option value="">Selecciona</option>
+        <option value="">Selecciona</option>
+        <option value="1">Anita</option>
+        <option value="2">Meli</option>
+        <option value="9">Pela</option>
+        <option value="10">Eli</option>
+        <option value="18">Marti, Prod. y Serv.</option>
+        <option value="22">Cande</option>
+        <option value="Si">Sil</option>
+        <option value="29">Mari</option>
+        <option value="30">Gabi</option>
+        <option value="31">Dennis</option>
+        <option value="Ja">Jari</option>
       </select>
       <input id="pVendioID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
       <label for="pVendioID">Quien lo vendió</label>
       <br>
       <select id="pHizo_sc" class="list_profesional">
-      <option value="">Selecciona</option>
+        <option value="">Selecciona</option>
+        <option value="1">Anita</option>
+        <option value="2">Meli</option>
+        <option value="9">Pela</option>
+        <option value="10">Eli</option>
+        <option value="18">Marti, Prod. y Serv.</option>
+        <option value="22">Cande</option>
+        <option value="Si">Sil</option>
+        <option value="29">Mari</option>
+        <option value="30">Gabi</option>
+        <option value="31">Dennis</option>
+        <option value="Ja">Jari</option>
       </select>
       <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
       <label for="pHizoID">Quien lo hizo</label>
@@ -186,13 +211,20 @@
       let gapiInited = false;
       let gisInited = false;
 
-      authorizeButton.style.display = 'none';
-      signoutButton.style.display = 'none';
-    //  rightColumn.style.display = 'none';
+      document.getElementById('authorize_button').style.display = 'none';
+      document.getElementById('signout_button').style.display = 'none';
 
+      /**
+       * Callback after api.js is loaded.
+       */
       function gapiLoaded() {
         gapi.load('client', initializeGapiClient);
       }
+
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
       async function initializeGapiClient() {
         await gapi.client.init({
           apiKey: API_KEY,
@@ -201,6 +233,10 @@
         gapiInited = true;
         maybeEnableButtons();
       }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
       function gisLoaded() {
         tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: CLIENT_ID,
@@ -210,11 +246,19 @@
         gisInited = true;
         maybeEnableButtons();
       }
+
+      /**
+       * Enables user interaction after all libraries are loaded.
+       */
       function maybeEnableButtons() {
         if (gapiInited && gisInited) {
           document.getElementById('authorize_button').style.display = 'inline';
         }
       }
+
+      /**
+       *  Sign in the user upon button click.
+       */
       function handleAuthClick() {
         tokenClient.callback = async (resp) => {
           if (resp.error !== undefined) {
@@ -231,6 +275,10 @@
           tokenClient.requestAccessToken({prompt: ''});
         }
       }
+
+      /**
+       *  Sign out the user upon button click.
+       */
       function handleSignoutClick() {
         const token = gapi.client.getToken();
         if (token !== null) {
@@ -449,27 +497,11 @@ function formatearFecha(fecha) {
 
   return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
 }
-
-function mostrarPreviewActaEn(tabID) {
-  console.log("funca")
-  const destino = document.getElementById(`muestrA${tabID}`);
-  const preview = document.getElementById("contPreviewActa");
-
-  if (!destino || !preview) return;
-
-  destino.appendChild(preview);
-  preview.style.display = "block";
-}
-
-document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(tab => {
-  tab.addEventListener('shown.bs.tab', function (event) {
-    const idTab = event.target.getAttribute('href').replace('#', ''); // ejemplo: 'tab1'
-    mostrarPreviewActaEn(tabID);
-  });
-});
-
-//--Personalización--
-
+</script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+<!--Personalización-->
+<script type="text/javascript">
 function checkOrientation() {
     const container = document.querySelector('.container');
     const leftColumn = document.querySelector('.left-column');
