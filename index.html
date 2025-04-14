@@ -11,7 +11,10 @@
   
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
 </head>
 <body class="body">
 
@@ -24,101 +27,144 @@
     <button id="signout_button" class="spaced btn btn-primary" onclick="handleSignoutClick()">Cerrar sesión</button>
 
   </div>
-    <br><div id="espacioDeTrabajo" class="container">
-    
-      <div class="left-column">      
+    <br>
     <div class="separaciones">
-      
+      <ul class="nav nav-tabs" id="menu-entradas">
+      <li class="nav-item">
+        <a class="nav-link active" id="tab1-acta" data-toggle="tab" href="#tab1">Reportar</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tab2-compartidos" data-toggle="tab" href="#tab2">Compartidos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tab3-fusios" data-toggle="tab" href="#tab3">Fusio-Dose</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Orden: tab-content > tab-pane > espacioDeTrabajo > column > separaciones-->
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="tab1">
+    <div id="espacioDeTrabajo" class="container">
+    <div class="left-column">
+      <div class="separaciones">
         <label for="txt_reporte">Reportar en el acta</label>
         <br>
         <input type="text" id="txt_reporte" class="text-boxpand" autocomplete="off">
         <br> <br> 
-  
+        
         <label for="pReportar">Emisor</label>
         <br>
         <select id="pReportar" class="list_profesional">
-          <option value="">Selecciona</option>
-          <option value="1">Anita</option>
-          <option value="2">Meli</option>
-          <option value="9">Pela</option>
-          <option value="10">Eli</option>
-          <option value="17">Marti, Admin</option>
-          <option value="18">Marti, Prod. y Serv.</option>
-          <option value="22">Cande</option>
-          <option value="Si">Sil</option>
-          <option value="29">Mari</option>
-          <option value="30">Gabi</option>
-          <option value="31">Dennis</option>
-          <option value="Ja">Jari</option>
+        <option value="">Selecciona</option>
         </select>
         <input id="pReportarID" type="text" class="input_profesional" placeholder="...o por ID" maxlength="2" />
         <br>   
-          <button type="button" id="btn_reportar" onclick="Reportar()" style="width:75px" disabled="true">Enviar</button>
-   
+        <button type="button" id="btn_reportar" onclick="Reportar()" style="width:75px" disabled="true">Enviar</button>
       </div>
+    </div> 
 
-    <div class="separaciones">
+    <div class="right-column" id="muestrAtab1"></div>
+
+    </div>
+  </div>
+  <div class="tab-pane fade" id="tab2">
+    <div id="espacioDeTrabajo" class="container">
+    <div class="left-column">
+    <div class="separaciones"> 
+
       <h3> Servicio Compartido</h3>  
       <select id="pVendio_sc" class="list_profesional">
-        <option value="">Selecciona</option>
-        <option value="1">Anita</option>
-        <option value="2">Meli</option>
-        <option value="9">Pela</option>
-        <option value="10">Eli</option>
-        <option value="18">Marti, Prod. y Serv.</option>
-        <option value="22">Cande</option>
-        <option value="Si">Sil</option>
-        <option value="29">Mari</option>
-        <option value="30">Gabi</option>
-        <option value="31">Dennis</option>
-        <option value="Ja">Jari</option>
+      <option value="">Selecciona</option>
       </select>
       <input id="pVendioID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
       <label for="pVendioID">Quien lo vendió</label>
       <br>
       <select id="pHizo_sc" class="list_profesional">
-        <option value="">Selecciona</option>
-        <option value="1">Anita</option>
-        <option value="2">Meli</option>
-        <option value="9">Pela</option>
-        <option value="10">Eli</option>
-        <option value="18">Marti, Prod. y Serv.</option>
-        <option value="22">Cande</option>
-        <option value="Si">Sil</option>
-        <option value="29">Mari</option>
-        <option value="30">Gabi</option>
-        <option value="31">Dennis</option>
-        <option value="Ja">Jari</option>
+      <option value="">Selecciona</option>
       </select>
       <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
       <label for="pHizoID">Quien lo hizo</label>
       <br>
-        <input type="text" id="txt_sc" class="text-box"> <label for="txt_sc">Servicio</label>
+      <input type="text" id="txt_sc" class="text-box"> <label for="txt_sc">Servicio</label>
       <br>
-        <input type="text" id="txt_Cliente_sc" class="text-box"> <label for="txt_Cliente_sc">Clienta</label>
+      <input type="text" id="txt_Cliente_sc" class="text-box"> <label for="txt_Cliente_sc">Clienta</label>
       <br>
       <button type="button" id="btn_sc" onclick="servicioCompartido()" disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
     </div>
+    </div>
+    
+    <div class="right-column" id="muestrAtab2"></div>
+  
+    </div>
   </div>
-  <div class="right-column">
-    <!-- Aquí puedes poner tus primeras cargas o dejarlo como espacio vacío por ahora -->
-     <div class="separaciones">
-      <pr>Ultimas Cargas en Acta</pr> <br>
-      <div id="contenedorCeldas" class="tabla-acta">
-      <div class="tabla-acta">
+  <div class="tab-pane fade" id="tab3">
+    <div id="espacioDeTrabajo" class="container">
+    <div class="separaciones">     
+      <!--Recep.Profes,fecha,fusio.booster.Clienta,tratamiento-->
+  
+      <label for="RecepFD">Recepcionista a cargo</label><br>
+      <input type="text" id="Recep_FD" class="text-box"><br>
+
+        <label for="pFusio">Profesional</label> <br>
+        <select id="pFusio" class="list_profesional">
+          <option value="">Selecciona</option>
+          </select><br>
+
+        <label for="ConcentreFD">Concentré</label><br>
+        <select id="ConcentreFD" class="lists">
+          <option value="BlondAbsolu">Blond Absolu</option>
+          <option value="ChromaAbsolu">Chroma Absolu</option>
+          <option value="Resistance">Resistance</option>
+          <option value="Nutritive">Nutritive</option>
+          <option value="Curl">Curl Manifesto</option>
+          <option value="UltraViolet">Ultra-Violet</option>
+        </select><br>
+
+        <label for="BoosterFD">Booster</label><br>
+        <select id="BoosterFD" class="lists">
+          <option value="CicaBlond">CicaBlond</option>
+          <option value="Nutrition">Nutrition</option>
+          <option value="Anti-Frizz">Anti-Frizz</option>
+          <option value="Brillance">Brillance</option>
+          <option value="Reconstruction">Reconstruction</option>
+          </select><br>
+
+        <label for="ClientaFD">Cliente/a</label><br>
+        <input type="text" id="txt_FD" class="text-box"><br>
+
+        <label for="SelectFD">Servicio</label><br>
+        <select id="SelectFD" class="lists">
+          <option value="Ritual">Ritual</option>
+          <option value="Fusio-Dose" selected>Fusio-Dose individual</option>
+        </select><br>
+
+      <button type="button" id="btn_fd" onclick="FusioDose()" disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
+
+    </div>
+    </div>
+  </div>
+</div>
+
+<div id="contPreviewActa" class="right-column"> 
+  <div class="separaciones">
+    <pr>Ultimas Cargas en Acta</pr> <br>
+        <div id="contenedorCeldas" class="tabla-acta">
+        <div class="tabla-acta">
         <div class="celda-acta encabezado">Entrada</div>
         <div class="celda-acta encabezado">Profesional</div>
         <div class="celda-acta encabezado">Fecha</div>
         <div class="celda-acta encabezado">Hora</div>
-      </div>
-      </div>
-     </div>
-  </div>
+        </div>
+        </div>
+    </div>
 </div>
-
 </body>
 
 <!--Autho-->
+
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 
 <script type="text/javascript">
 
@@ -129,29 +175,24 @@
   const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
 
   const espacioDeTrabajo = document.getElementById('espacioDeTrabajo');
+ // const rightColumn = document.querySelector('right-column');
   const authorizeButton = document.getElementById('authorize_button');
   const signoutButton = document.getElementById('signout_button');
   const btnReportar = document.getElementById('btn_reportar');
   const btnSc = document.getElementById('btn_sc');
+  const btnFd = document.getElementById('btn_fd');
 
       let tokenClient;
       let gapiInited = false;
       let gisInited = false;
 
-      document.getElementById('authorize_button').style.display = 'none';
-      document.getElementById('signout_button').style.display = 'none';
+      authorizeButton.style.display = 'none';
+      signoutButton.style.display = 'none';
+    //  rightColumn.style.display = 'none';
 
-      /**
-       * Callback after api.js is loaded.
-       */
       function gapiLoaded() {
         gapi.load('client', initializeGapiClient);
       }
-
-      /**
-       * Callback after the API client is loaded. Loads the
-       * discovery doc to initialize the API.
-       */
       async function initializeGapiClient() {
         await gapi.client.init({
           apiKey: API_KEY,
@@ -160,10 +201,6 @@
         gapiInited = true;
         maybeEnableButtons();
       }
-
-      /**
-       * Callback after Google Identity Services are loaded.
-       */
       function gisLoaded() {
         tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: CLIENT_ID,
@@ -173,42 +210,27 @@
         gisInited = true;
         maybeEnableButtons();
       }
-
-      /**
-       * Enables user interaction after all libraries are loaded.
-       */
       function maybeEnableButtons() {
         if (gapiInited && gisInited) {
           document.getElementById('authorize_button').style.display = 'inline';
         }
       }
-
-      /**
-       *  Sign in the user upon button click.
-       */
       function handleAuthClick() {
         tokenClient.callback = async (resp) => {
           if (resp.error !== undefined) {
             throw (resp);
           }
+          PrecargaDatos();
           estaHabilitado(true);
     FlashPantalla("Feliz Jornada!");
-          muestraDeActa();
         };
 
         if (gapi.client.getToken() === null) {
-          // Prompt the user to select a Google Account and ask for consent to share their data
-          // when establishing a new session.
           tokenClient.requestAccessToken({prompt: 'consent'});
         } else {
-          // Skip display of account chooser and consent dialog for an existing session.
           tokenClient.requestAccessToken({prompt: ''});
         }
       }
-
-      /**
-       *  Sign out the user upon button click.
-       */
       function handleSignoutClick() {
         const token = gapi.client.getToken();
         if (token !== null) {
@@ -221,16 +243,55 @@
   function estaHabilitado(vinCulado) {
     authorizeButton.style.display = vinCulado ? 'none' : 'inline';
     signoutButton.style.display = vinCulado ? 'inline' : 'none';
-    //espacioDeTrabajo.style.display = vinCulado ? 'flex' : 'hidden';
+    //rightColumn.style.display = vinCulado ? 'block' : 'none';
     btnReportar.disabled = vinCulado ? false : true;
     btnSc.disabled = vinCulado ? false : true;
+    btnFd.disabled = vinCulado ? false : true;
   } 
 
-let PrimerPreview;
-async function muestraDeActa() {
-  let response;
+let profesionales = {};
+async function PrecargaDatos() {
+  let responseProfes;
   try {
-    response = await gapi.client.sheets.spreadsheets.values.get({
+    responseProfes = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: SHEETSID,
+      range: 'Lectura!A2:B', // Obtén todas las filas desde A2 hasta el final
+    });
+  } catch (err) {
+    FlashPantalla("No pudo realizarse la conexión para leer profesionales. Desvinculate y vuelve a solicitar Autorización");
+    console.error(err);
+    return;
+  }
+  const profs = responseProfes.result;
+  if (!profs || !profs.values || profs.values.length === 0) {
+    FlashPantalla("No hay profesionales cargadas");
+    console.warn("No hay profesionales cargadas.");
+    return;
+  }
+  
+  profesionales = {};  // Reiniciamos por si ya había datos previos
+    profs.values.forEach(row => {
+        profesionales[row[0]] = row[1];
+    });
+    
+    // Actualizamos los select que tienen la clase "list_profesional"
+    const selects = document.querySelectorAll('.list_profesional');
+    selects.forEach(select => {
+      
+  select.innerHTML = '<option value="">Selecciona</option>';
+
+for (const [id, nombre] of Object.entries(profesionales)) {
+  const option = document.createElement('option');
+  option.value = id;
+  option.textContent = nombre;
+  select.appendChild(option);
+}
+});
+
+  //Muestra de Acta
+  let responseActa;
+  try {
+    responseActa = await gapi.client.sheets.spreadsheets.values.get({
       spreadsheetId: SHEETSID,
       range: 'Acta Principal!A2:D', // Obtén todas las filas desde A2 hasta el final
     });
@@ -240,7 +301,7 @@ async function muestraDeActa() {
     return;
   }
 
-  const range = response.result;
+  const range = responseActa.result;
   if (!range || !range.values || range.values.length === 0) {
     FlashPantalla("No hay entradas cargadas");
     console.warn("No hay entradas cargadas.");
@@ -319,14 +380,13 @@ async function Reportar() {
     document.getElementById('pReportarID').value = '';
     document.getElementById('txt_reporte').value = '';
     document.getElementById('pReportar').value = '';
-    muestraDeActa();
+    PrecargaDatos();
   } catch (err) {
 
     FlashPantalla("Error al enviar el reporte, reinicia la pagina o intente más tarde");
     console.error("Error al enviar el reporte:", err);
   }
 }
-
 async function servicioCompartido() {
 
   const pVendioSC = document.getElementById('pVendio_sc');
@@ -368,13 +428,17 @@ async function servicioCompartido() {
     document.getElementById('pHizo_sc').value = '';
     document.getElementById('txt_sc').value = '';
     document.getElementById('txt_Cliente_sc').value = '';
-    muestraDeActa();
+    PrecargaDatos();
   } catch (err) {
 
     FlashPantalla("Error al enviar, Desvincula y Conecta nuevamente, o intente mas tarde");
     console.error("Error al cargar el SC:", err);
   }
 }
+async function FusioDose() {
+  FlashPantalla("Esta Función aún no está lista. Gracias por la paciencia.");
+}
+
 function formatearFecha(fecha) {
   const dia = String(fecha.getDate()).padStart(2, '0');
   const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
@@ -385,11 +449,27 @@ function formatearFecha(fecha) {
 
   return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
 }
-</script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-<!--Personalización-->
-<script type="text/javascript">
+
+function mostrarPreviewActaEn(tabID) {
+  console.log("funca")
+  const destino = document.getElementById(`muestrA${tabID}`);
+  const preview = document.getElementById("contPreviewActa");
+
+  if (!destino || !preview) return;
+
+  destino.appendChild(preview);
+  preview.style.display = "block";
+}
+
+document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(tab => {
+  tab.addEventListener('shown.bs.tab', function (event) {
+    const idTab = event.target.getAttribute('href').replace('#', ''); // ejemplo: 'tab1'
+    mostrarPreviewActaEn(tabID);
+  });
+});
+
+//--Personalización--
+
 function checkOrientation() {
     const container = document.querySelector('.container');
     const leftColumn = document.querySelector('.left-column');
@@ -410,6 +490,7 @@ function checkOrientation() {
 }
 // Llama a la función al cargar la página
 window.addEventListener('load', checkOrientation);
+window.addEventListener('load', handleAuthClick);
 
 // Llama a la función cada vez que se redimensione la ventana
 window.addEventListener('resize', checkOrientation);
@@ -433,39 +514,26 @@ function resizeInput() {
             flashMessage.classList.add('flash-hidden');
         }, 3000); // 3000 ms = 3 segundos
     }
+    
 
-    const profesionales = {
-      '1': 'Anita',
-      '2': 'Meli',
-      '9': 'Pela',
-      '10': 'Eli',
-      '22': 'Cande',
-      '17': 'Marti, Admin',
-      '18': 'Marti, Prod y Servicios',
-      'Si': 'Sil',
-      '29': 'Mari',
-      '30': 'Gabi',
-      '31': 'Dennis',
-      'Ja': 'Jari',
-  };
+  // Función de autocompletado para los inputs que tienen la clase "input_profesional"
   function handleAutocomplete(input) {
-    const inputVal = input.value.trim(); // Obtiene el valor ingresado, eliminando espacios
-    const select = input.previousElementSibling; // Obtiene el select anterior
-    const nombre = profesionales[inputVal]; // Obtiene el nombre del profesional basado en el número
-
+    const inputVal = input.value.trim(); // Valor ingresado sin espacios adicionales
+    const select = input.previousElementSibling; // Se asume que el select está justo antes del input
+    const nombre = profesionales[inputVal]; // Busca el profesional por ID en el objeto global
     if (nombre) {
-        select.value = inputVal; // Actualiza el valor del select si hay coincidencia
+      select.value = inputVal; // Si hay coincidencia, asigna el ID al select
     } else {
-        select.value = ''; // Limpia el select si no hay coincidencia
+      select.value = ''; // Si no coincide, limpia el select
     }
-}
-
-// Captura todos los inputs y les añade el evento
-const inputs = document.querySelectorAll('.input_profesional');
-inputs.forEach(input => {
+  }
+  // Capturamos los inputs de autocompletado y agregamos el evento "input"
+  const inputs = document.querySelectorAll('.input_profesional');
+  inputs.forEach(input => {
     input.addEventListener('input', function() {
-        handleAutocomplete(this);
+      handleAutocomplete(this);
     });
-});
+  });
+
 </script>
 </html>
