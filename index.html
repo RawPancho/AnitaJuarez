@@ -1,531 +1,141 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Acta Laboral by Anita Juarez v1.2</title>
-
+  <title>Acta Laboral v2.0 - HTTP Post</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  
 </head>
 <body class="body">
 
   <div id="flash-message" class="flash-hidden"></div>
 
-    <div class="separaciones">
-      <ul class="nav nav-tabs" id="menu-entradas">
-      <li class="nav-item">
-        <a class="nav-link active" id="tab1-acta" data-toggle="tab" href="#tab1">Reportar</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="tab2-compartidos" data-toggle="tab" href="#tab2">Compartidos</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="tab3-fusios" data-toggle="tab" href="#tab3">Fusio-Dose</a>
-      </li>
+  <div class="separaciones">
+    <ul class="nav nav-tabs" id="menu-entradas">
+      <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab1">Reportar</a></li>
+      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab2">Compartidos</a></li>
+      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab3">Fusio-Dose</a></li>
     </ul>
   </div>
 
-  <!-- Orden: tab-content > tab-pane > espacioDeTrabajo > column > separaciones-->
-<div class="tab-content">
-  <div class="tab-pane fade show active" id="tab1">
-    <div id="espacioDeTrabajo" class="container">
-    <div class="left-column">
-      <div class="separaciones">
-        <label for="txt_reporte">Reportar en el acta</label>
-        <br>
-        <input type="text" id="txt_reporte" class="text-boxpand" autocomplete="off">
-        <br> <br> 
-        
-        <label for="pReportar">Emisor</label>
-        <br>
-        <select id="pReportar" class="list_profesional">
-        <option value="">Selecciona</option>
-        </select>
-        <input id="pReportarID" type="text" class="input_profesional" placeholder="...o por ID" maxlength="2" />
-        <br>   
-        <button type="button" id="btn_reportar" onclick="Reportar()" style="width:75px" disabled="true">Enviar</button>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="tab1">
+      <div class="container">
+        <div class="separaciones">
+          <label>Reportar en el acta</label><br>
+          <input type="text" id="txt_reporte" class="text-boxpand" autocomplete="off"><br><br>
+          
+          <label>Emisor</label><br>
+          <select id="pReportar" class="list_profesional">
+            <option value="">Selecciona</option>
+            <option value="ID1">Nombre 1</option> <option value="ID2">Nombre 2</option>
+          </select>
+          <input id="pReportarID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px" />
+          <br><br>
+          <button type="button" onclick="EnviarReporte()">Enviar Reporte</button>
+        </div>
       </div>
-    </div> 
-
-    <div class="right-column" id="muestrAtab1"></div>
-
     </div>
-  </div>
-  <div class="tab-pane fade" id="tab2">
-    <div id="espacioDeTrabajo" class="container">
-    <div class="left-column">
-    <div class="separaciones"> 
 
-      <h3> Servicio Compartido</h3>  
-      <select id="pVendio_sc" class="list_profesional">
-      <option value="">Selecciona</option>
-      </select>
-      <input id="pVendioID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
-      <label for="pVendioID">Quien lo vendió</label>
-      <br>
-      <select id="pHizo_sc" class="list_profesional">
-      <option value="">Selecciona</option>
-      </select>
-      <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px"/>
-      <label for="pHizoID">Quien lo hizo</label>
-      <br>
-      <input type="text" id="txt_sc" class="text-box"> <label for="txt_sc">Servicio</label>
-      <br>
-      <input type="text" id="txt_Cliente_sc" class="text-box"> <label for="txt_Cliente_sc">Clienta</label>
-      <br>
-      <button type="button" id="btn_sc" onclick="servicioCompartido()" disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
-    </div>
-    </div>
-    
-    <div class="right-column" id="muestrAtab2"></div>
-  
-    </div>
-  </div>
-  <div class="tab-pane fade" id="tab3">
-    <div id="espacioDeTrabajo" class="container">
-    <div class="separaciones">     
-      <!--Recep.Profes,fecha,fusio.booster.Clienta,tratamiento-->
-  
-      <label for="RecepFD">Recepcionista a cargo</label><br>
-      <input type="text" id="Recep_FD" class="text-box"><br>
-
-        <label for="pFusio">Profesional</label> <br>
-        <select id="pFusio" class="list_profesional">
-          <option value="">Selecciona</option>
-          </select><br>
-
-        <label for="ConcentreFD">Concentré</label><br>
-        <select id="ConcentreFD" class="lists">
-          <option value="BlondAbsolu">Blond Absolu</option>
-          <option value="ChromaAbsolu">Chroma Absolu</option>
-          <option value="Resistance">Resistance</option>
-          <option value="Nutritive">Nutritive</option>
-          <option value="Curl">Curl Manifesto</option>
-          <option value="UltraViolet">Ultra-Violet</option>
-        </select><br>
-
-        <label for="BoosterFD">Booster</label><br>
-        <select id="BoosterFD" class="lists">
-          <option value="CicaBlond">CicaBlond</option>
-          <option value="Nutrition">Nutrition</option>
-          <option value="Anti-Frizz">Anti-Frizz</option>
-          <option value="Brillance">Brillance</option>
-          <option value="Reconstruction">Reconstruction</option>
-          </select><br>
-
-        <label for="ClientaFD">Cliente/a</label><br>
-        <input type="text" id="txt_FD" class="text-box"><br>
-
-        <label for="SelectFD">Servicio</label><br>
-        <select id="SelectFD" class="lists">
-          <option value="Ritual">Ritual</option>
-          <option value="Fusio-Dose" selected>Fusio-Dose individual</option>
-        </select><br>
-
-      <button type="button" id="btn_fd" onclick="FusioDose()" disabled="true" style="width:150px;margin:4px 0px">Cargar</button>
-
-    </div>
-    </div>
-  </div>
-</div>
-
-<div id="contPreviewActa" class="right-column"> 
-  <div class="separaciones">
-    <pr>Ultimas Cargas en Acta</pr> <br>
-        <div id="contenedorCeldas" class="tabla-acta">
-        <div class="tabla-acta">
-        <div class="celda-acta encabezado">Entrada</div>
-        <div class="celda-acta encabezado">Profesional</div>
-        <div class="celda-acta encabezado">Fecha</div>
-        <div class="celda-acta encabezado">Hora</div>
+    <div class="tab-pane fade" id="tab2">
+      <div class="container">
+        <div class="separaciones">
+          <h3>Servicio Compartido</h3>
+          <label>Vendedor</label>
+          <select id="pVendio_sc" class="list_profesional"><option value="">Selecciona</option></select>
+          <input id="pVendioID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:40px"/><br>
+          
+          <label>Hizo</label>
+          <select id="pHizo_sc" class="list_profesional"><option value="">Selecciona</option></select>
+          <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:40px"/><br>
+          
+          <input type="text" id="txt_sc" class="text-box"> <label>Servicio</label><br>
+          <input type="text" id="txt_Cliente_sc" class="text-box"> <label>Clienta</label><br>
+          <button type="button" onclick="EnviarNutricion()">Cargar Nutrición</button>
         </div>
-        </div>
+      </div>
     </div>
-</div>
+
+    <div class="tab-pane fade" id="tab3">
+      <div class="container">
+        <div class="separaciones">
+          <p>Esta sección usará la misma lógica de envío cuando la necesites.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // --- CONFIGURACIÓN ---
+    const URL_SCRIPT = "TU_URL_DE_APPS_SCRIPT_AQUI"; 
+    const TOKEN = "LoMasSano!VaASerOlvidar_esta_contrasena";
+
+    // --- LÓGICA DE ENVÍO CENTRALIZADA ---
+    async function EnviarA_Google(datos) {
+      datos.token = TOKEN; // Agregamos el token de seguridad
+
+      try {
+        await fetch(URL_SCRIPT, {
+          method: "POST",
+          mode: "no-cors", // Evita problemas de seguridad del navegador
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(datos)
+        });
+        FlashPantalla("¡Enviado con éxito!");
+        LimpiarCampos();
+      } catch (error) {
+        FlashPantalla("Error al enviar");
+        console.error(error);
+      }
+    }
+
+    // --- FUNCIONES DE CADA BOTÓN ---
+    function EnviarReporte() {
+      const datos = {
+        CasoParticular: "Reporte",
+        Autor: document.getElementById('pReportar').selectedOptions[0].text,
+        Reporte: document.getElementById('txt_reporte').value
+      };
+      if(datos.Autor === "Selecciona" || !datos.Reporte) return FlashPantalla("Faltan datos");
+      EnviarA_Google(datos);
+    }
+
+    function EnviarNutricion() {
+      const datos = {
+        CasoParticular: "Nutricion Compartida",
+        Vendedor: document.getElementById('pVendio_sc').selectedOptions[0].text,
+        Aplicador: document.getElementById('pHizo_sc').selectedOptions[0].text,
+        Servicio: document.getElementById('txt_sc').value,
+        Cliente: document.getElementById('txt_Cliente_sc').value
+      };
+      if(!datos.Vendedor || !datos.Cliente) return FlashPantalla("Faltan datos");
+      EnviarA_Google(datos);
+    }
+
+    // --- TWEAKS Y MEJORAS VISUALES ---
+    function FlashPantalla(message) {
+      const flash = document.getElementById('flash-message');
+      flash.textContent = message;
+      flash.className = 'flash-visible';
+      setTimeout(() => { flash.className = 'flash-hidden'; }, 3000);
+    }
+
+    function LimpiarCampos() {
+      document.querySelectorAll('input').forEach(i => i.value = '');
+      document.querySelectorAll('select').forEach(s => s.value = '');
+    }
+
+    // Autocompletado simple por ID
+    document.querySelectorAll('.input_profesional').forEach(input => {
+      input.addEventListener('input', function() {
+        const sel = this.previousElementSibling;
+        sel.value = this.value.toUpperCase(); // Asume que el ID en el select es igual al ID ingresado
+      });
+    });
+
+  </script>
 </body>
-
-<!--Autho-->
-
-<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-
-<script type="text/javascript">
-
-  const CLIENT_ID = '975138822531-kc3rvpocfo6m56qh0mv50itfeko0udb8.apps.googleusercontent.com';
-  const API_KEY = 'AIzaSyBoAXvSua9gw0njTpFMuXmq13iJgruRrEE';
-  const DISCOVERY_DOCS = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-  const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-  const SHEETSID = '1JG6vntHGDJo5K5MkAahw1CDoXs656Sal_AyTWd1XyNM';
-
-  const espacioDeTrabajo = document.getElementById('espacioDeTrabajo');
- // const rightColumn = document.querySelector('right-column');
-  const authorizeButton = document.getElementById('authorize_button');
-  const signoutButton = document.getElementById('signout_button');
-  const btnReportar = document.getElementById('btn_reportar');
-  const btnSc = document.getElementById('btn_sc');
-  const btnFd = document.getElementById('btn_fd');
-
-      let tokenClient;
-      let gapiInited = false;
-      let gisInited = false;
-
-      authorizeButton.style.display = 'none';
-      signoutButton.style.display = 'none';
-    //  rightColumn.style.display = 'none';
-
-      function gapiLoaded() {
-        gapi.load('client', initializeGapiClient);
-      }
-      async function initializeGapiClient() {
-        await gapi.client.init({
-          apiKey: API_KEY,
-          discoveryDocs: [DISCOVERY_DOCS],
-        });
-        gapiInited = true;
-        maybeEnableButtons();
-      }
-      function gisLoaded() {
-        tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: CLIENT_ID,
-          scope: SCOPES,
-          callback: '', // defined later
-        });
-        gisInited = true;
-        maybeEnableButtons();
-      }
-      function maybeEnableButtons() {
-        if (gapiInited && gisInited) {
-          document.getElementById('authorize_button').style.display = 'inline';
-        }
-      }
-      function handleAuthClick() {
-        tokenClient.callback = async (resp) => {
-          if (resp.error !== undefined) {
-            throw (resp);
-          }
-          PrecargaDatos();
-          estaHabilitado(true);
-    FlashPantalla("Feliz Jornada!");
-        };
-
-        if (gapi.client.getToken() === null) {
-          tokenClient.requestAccessToken({prompt: 'consent'});
-        } else {
-          tokenClient.requestAccessToken({prompt: ''});
-        }
-      }
-      function handleSignoutClick() {
-        const token = gapi.client.getToken();
-        if (token !== null) {
-          google.accounts.oauth2.revoke(token.access_token);
-          gapi.client.setToken('');
-          estaHabilitado(false);
-        }
-      }
-
-  function estaHabilitado(vinCulado) {
-    authorizeButton.style.display = vinCulado ? 'none' : 'inline';
-    signoutButton.style.display = vinCulado ? 'inline' : 'none';
-    //rightColumn.style.display = vinCulado ? 'block' : 'none';
-    btnReportar.disabled = vinCulado ? false : true;
-    btnSc.disabled = vinCulado ? false : true;
-    btnFd.disabled = vinCulado ? false : true;
-  } 
-
-let profesionales = {};
-async function PrecargaDatos() {
-  let responseProfes;
-  try {
-    responseProfes = await gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: SHEETSID,
-      range: 'Lectura!A2:B', // Obtén todas las filas desde A2 hasta el final
-    });
-  } catch (err) {
-    FlashPantalla("No pudo realizarse la conexión para leer profesionales. Desvinculate y vuelve a solicitar Autorización");
-    console.error(err);
-    return;
-  }
-  const profs = responseProfes.result;
-  if (!profs || !profs.values || profs.values.length === 0) {
-    FlashPantalla("No hay profesionales cargadas");
-    console.warn("No hay profesionales cargadas.");
-    return;
-  }
-  
-  profesionales = {};  // Reiniciamos por si ya había datos previos
-    profs.values.forEach(row => {
-        profesionales[row[0]] = row[1];
-    });
-    
-    // Actualizamos los select que tienen la clase "list_profesional"
-    const selects = document.querySelectorAll('.list_profesional');
-    selects.forEach(select => {
-      
-  select.innerHTML = '<option value="">Selecciona</option>';
-
-for (const [id, nombre] of Object.entries(profesionales)) {
-  const option = document.createElement('option');
-  option.value = id;
-  option.textContent = nombre;
-  select.appendChild(option);
-}
-});
-
-  //Muestra de Acta
-  let responseActa;
-  try {
-    responseActa = await gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: SHEETSID,
-      range: 'Acta Principal!A2:D', // Obtén todas las filas desde A2 hasta el final
-    });
-  } catch (err) {
-    FlashPantalla("No pudo realizarse la conexión. Desvinculate y vuelve a solicitar Autorización");
-    console.error(err);
-    return;
-  }
-
-  const range = responseActa.result;
-  if (!range || !range.values || range.values.length === 0) {
-    FlashPantalla("No hay entradas cargadas");
-    console.warn("No hay entradas cargadas.");
-    return;
-  }
-  // Tomar las últimas 5 filas
-  const ultimasFilas = range.values.slice(-5);
-  const contenedor = document.getElementById('contenedorCeldas');
-  contenedor.innerHTML = ""; // Limpia el contenedor antes de agregar nuevos elementos
-
-  // Crear encabezados (solo una vez)
-  const encabezados = ['Entrada', 'Profesional', 'Fecha', 'Hora'];
-  encabezados.forEach(texto => {
-    const encabezadoCelda = document.createElement('div');
-    encabezadoCelda.classList.add('celda-acta', 'encabezado');
-    encabezadoCelda.textContent = texto;
-    contenedor.appendChild(encabezadoCelda);
-  });
-
-  // Añadir las filas de datos
-  ultimasFilas.forEach((fila) => {
-    const entradaCelda = document.createElement('div');
-    entradaCelda.classList.add('celda-acta');
-    entradaCelda.textContent = fila[0];
-
-    const profesionalCelda = document.createElement('div');
-    profesionalCelda.classList.add('celda-acta');
-    profesionalCelda.textContent = fila[1];
-
-    const fechaCelda = document.createElement('div');
-    fechaCelda.classList.add('celda-acta');
-    fechaCelda.textContent = fila[2];
-
-    const horaCelda = document.createElement('div');
-    horaCelda.classList.add('celda-acta');
-    horaCelda.textContent = fila[3];
-
-    // Añadir las celdas al contenedor
-    contenedor.appendChild(entradaCelda);
-    contenedor.appendChild(profesionalCelda);
-    contenedor.appendChild(fechaCelda);
-    contenedor.appendChild(horaCelda);
-  });
-}
-
-async function Reportar() {
-  const txtReporte = document.getElementById('txt_reporte').value; // Obtener el valor
-  const selectElement = document.getElementById('pReportar');
-  const Professional = selectElement.selectedOptions[0].text;
-  const fechaActual = new Date();
-  const [fechaCorta, hora] = formatearFecha(fechaActual);
-
-  // Verificar si los campos están vacíos
-  if (!txtReporte || !Professional || Professional === "Selecciona") {
-    FlashPantalla("Por favor, complete todos los campos antes de reportar.");
-    return;
-  }
-  const actualizar = [
-    txtReporte,
-    Professional,
-    fechaCorta,
-    hora,
-  ];
-
-  try {
-    await gapi.client.sheets.spreadsheets.values.append({
-      spreadsheetId: SHEETSID,
-      range: 'Acta Principal!A:D', // Ajusta este rango según tu necesidad
-      valueInputOption: 'USER_ENTERED',
-      insertDataOption: 'INSERT_ROWS',
-      resource: {
-        values: [actualizar],
-      },
-    });
-    FlashPantalla("Reporte Enviado con Exito");
-    document.getElementById('pReportarID').value = '';
-    document.getElementById('txt_reporte').value = '';
-    document.getElementById('pReportar').value = '';
-    PrecargaDatos();
-  } catch (err) {
-
-    FlashPantalla("Error al enviar el reporte, reinicia la pagina o intente más tarde");
-    console.error("Error al enviar el reporte:", err);
-  }
-}
-async function servicioCompartido() {
-
-  const pVendioSC = document.getElementById('pVendio_sc');
-  const VendioSc = pVendioSC.selectedOptions[0].text;
-  const pHizoSC = document.getElementById('pHizo_sc');
-  const HizoSc = pHizoSC.selectedOptions[0].text;
-  const ClienteSc = document.getElementById('txt_Cliente_sc').value;
-  const Servicio = document.getElementById('txt_sc').value;
-  const fechaActual = new Date();
-  const [fechaCorta, hora] = formatearFecha(fechaActual);
-
-  // Verificar si los campos están vacíos
-  if (!HizoSc || !VendioSc || !ClienteSc  || !Servicio || !VendioSc === "Selecciona" || HizoSc === "Selecciona") {
-    FlashPantalla("Por favor, complete todos los campos antes de reportar.");
-    return;
-  }
-  const actualizar = [
-    VendioSc,
-    HizoSc,
-    Servicio,
-    fechaCorta,
-    ClienteSc,
-  ];
-
-  try {
-    await gapi.client.sheets.spreadsheets.values.append({
-      spreadsheetId: SHEETSID,
-      range: 'Servicios Compartidos!A:E', // Ajusta este rango según tu necesidad
-      valueInputOption: 'USER_ENTERED',
-      insertDataOption: 'INSERT_ROWS',
-      resource: {
-        values: [actualizar],
-      },
-    });
-    FlashPantalla("Servicio cargado con Exito");
-    document.getElementById('pVendioID').value = '';
-    document.getElementById('pVendio_sc').value = '';
-    document.getElementById('pHizoID').value = '';
-    document.getElementById('pHizo_sc').value = '';
-    document.getElementById('txt_sc').value = '';
-    document.getElementById('txt_Cliente_sc').value = '';
-    PrecargaDatos();
-  } catch (err) {
-
-    FlashPantalla("Error al enviar, Desvincula y Conecta nuevamente, o intente mas tarde");
-    console.error("Error al cargar el SC:", err);
-  }
-}
-async function FusioDose() {
-  FlashPantalla("Esta Función aún no está lista. Gracias por la paciencia.");
-}
-
-function formatearFecha(fecha) {
-  const dia = String(fecha.getDate()).padStart(2, '0');
-  const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
-  const año = fecha.getFullYear();
-  const horas = String(fecha.getHours()).padStart(2, '0');
-  const minutos = String(fecha.getMinutes()).padStart(2, '0');
-  const segundos = String(fecha.getSeconds()).padStart(2, '0');
-
-  return [`${dia}/${mes}/${año}`, `${horas}:${minutos}:${segundos}`];
-}
-
-function mostrarPreviewActaEn(tabID) {
-  console.log("funca")
-  const destino = document.getElementById(`muestrA${tabID}`);
-  const preview = document.getElementById("contPreviewActa");
-
-  if (!destino || !preview) return;
-
-  destino.appendChild(preview);
-  preview.style.display = "block";
-}
-
-document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(tab => {
-  tab.addEventListener('shown.bs.tab', function (event) {
-    const idTab = event.target.getAttribute('href').replace('#', ''); // ejemplo: 'tab1'
-    mostrarPreviewActaEn(tabID);
-  });
-});
-
-//--Personalización--
-
-function checkOrientation() {
-    const container = document.querySelector('.container');
-    const leftColumn = document.querySelector('.left-column');
-    const rightColumn = document.querySelector('.right-column');
-
-    // Verifica si la pantalla está en modo horizontal
-    if (window.innerWidth > window.innerHeight) {
-        // Muestra la columna derecha en modo horizontal
-        container.style.display = 'flex'; // o 'block' dependiendo de cómo quieras mostrarlo
-        rightColumn.style.display = 'block'; // Muestra la columna derecha
-        leftColumn.style.flex = '1';
-    } else {
-        // Oculta la columna derecha en modo vertical
-        container.style.display = 'block';
-        rightColumn.style.display = 'none'; // Oculta la columna derecha
-        leftColumn.style.width = '100%';
-    }
-}
-// Llama a la función al cargar la página
-window.addEventListener('load', checkOrientation);
-window.addEventListener('load', handleAuthClick);
-
-// Llama a la función cada vez que se redimensione la ventana
-window.addEventListener('resize', checkOrientation);
-
-//Auto adjust textboxes width
-var input = document.querySelector('input'); // get the input element
-input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
-resizeInput.call(input); // immediately call the function
-function resizeInput() {
-  this.style.width = this.value.length + "ch";
-}
-      function FlashPantalla(message) {
-        const flashMessage = document.getElementById('flash-message');
-        flashMessage.textContent = message; // Cambiar el texto del mensaje
-        flashMessage.classList.remove('flash-hidden'); // Mostrar el mensaje
-        flashMessage.classList.add('flash-visible');
-    
-        // Ocultar el mensaje después de 3 segundos
-        setTimeout(() => {
-            flashMessage.classList.remove('flash-visible');
-            flashMessage.classList.add('flash-hidden');
-        }, 3000); // 3000 ms = 3 segundos
-    }
-    
-
-  // Función de autocompletado para los inputs que tienen la clase "input_profesional"
-  function handleAutocomplete(input) {
-    const inputVal = input.value.trim(); // Valor ingresado sin espacios adicionales
-    const select = input.previousElementSibling; // Se asume que el select está justo antes del input
-    const nombre = profesionales[inputVal]; // Busca el profesional por ID en el objeto global
-    if (nombre) {
-      select.value = inputVal; // Si hay coincidencia, asigna el ID al select
-    } else {
-      select.value = ''; // Si no coincide, limpia el select
-    }
-  }
-  // Capturamos los inputs de autocompletado y agregamos el evento "input"
-  const inputs = document.querySelectorAll('.input_profesional');
-  inputs.forEach(input => {
-    input.addEventListener('input', function() {
-      handleAutocomplete(this);
-    });
-  });
-
-</script>
 </html>
