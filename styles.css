@@ -21,7 +21,7 @@
 
 /* Configuración del contenedor principal */
 .container {
-  display: hidden;
+  display: none;
   width: 100%;
 }
 .left-column, .tab-pane {
