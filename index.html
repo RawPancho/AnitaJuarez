@@ -30,7 +30,8 @@
           <label>Emisor</label><br>
           <select id="pReportar" class="list_profesional">
             <option value="">Selecciona</option>
-            <option value="ID1">Nombre 1</option> <option value="ID2">Nombre 2</option>
+            <option value="ID1">Pela</option>
+            <option value="ID2">Eli</option>
           </select>
           <input id="pReportarID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:50px" />
           <br><br>
@@ -52,7 +53,7 @@
           
           <input type="text" id="txt_sc" class="text-box"> <label>Servicio</label><br>
           <input type="text" id="txt_Cliente_sc" class="text-box"> <label>Clienta</label><br>
-          <button type="button" onclick="EnviarNutricion()">Cargar Nutrición</button>
+          <button type="button" onclick="EnviarServicioCompartido()">Cargar Servicio Compartido</button>
         </div>
       </div>
     </div>
@@ -61,8 +62,8 @@
 
   <script type="text/javascript">
     // --- CONFIGURACIÓN ---
-    const URL_SCRIPT = "TU_URL_DE_APPS_SCRIPT_AQUI"; 
-    const TOKEN = "LoMasSano!VaASerOlvidar_esta_contrasena";
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbw--3Z5sAedSC26Q4Bt_HZ_l7J-M8QqskZkQjZH0za0k7R5HZu9lNAFi1URTljJ1JQJ/exec"; 
+    const TOKEN = "ClavePrueba";
 
     // --- LÓGICA DE ENVÍO CENTRALIZADA ---
     async function EnviarA_Google(datos) {
@@ -94,9 +95,9 @@
       EnviarA_Google(datos);
     }
 
-    function EnviarNutricion() {
+    function EnviarServicioCompartido() {
       const datos = {
-        CasoParticular: "Nutricion Compartida",
+        CasoParticular: "NutricionCompartida",
         Vendedor: document.getElementById('pVendio_sc').selectedOptions[0].text,
         Aplicador: document.getElementById('pHizo_sc').selectedOptions[0].text,
         Servicio: document.getElementById('txt_sc').value,
