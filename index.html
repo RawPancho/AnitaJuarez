@@ -11,23 +11,15 @@
 </head>
 <body class="body">
 
-  <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 10000; text-align: center; padding-top: 20%;">
-    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-    <p style="margin-top: 15px; font-weight: bold; color: #007bff;">Procesando...</p>
-</div>
+<div id="loading-overlay" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 10000; text-align: center; padding-top: 20%;">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        <p style="margin-top: 15px; font-weight: bold; color: #007bff;">Cargando sistema...</p>
+    </div>
 
-<div id="login-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-    <h3>Ingrese Contraseña de Acceso</h3>
-    <input type="password" id="pass-input" class="form-control" style="width:250px;">
-    <br>
-    <button onclick="ValidarYEntrar()" class="btn btn-primary" style="margin-top: 10px;">Entrar</button>
-</div>
-
-<div id="main-content" style="display:none;">
-   </div>
-   
-  <div id="flash-message" class="flash-hidden"></div>
-
+    <div id="main-content" style="display:none;">
+        <div id="flash-message" class="flash-hidden"></div>
+        </div>
+      
   <div class="separaciones">
     <ul class="nav nav-tabs" id="menu-entradas">
       <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab1">Reportar</a></li>
@@ -66,7 +58,11 @@
           <select id="pHizo_sc" class="list_profesional"><option value="">Selecciona</option></select>
           <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:40px"/><br>
           
-          <select id="Serv_sc" class="list_profesional"><option value="">Selecciona</option></select> <label>Servicio</label><br>
+<input type="text" id="Serv_sc" class="text-box" list="lista-servicios" autocomplete="off" placeholder="Escribe o selecciona...">
+<datalist id="lista-servicios"></datalist>
+
+<label>Servicio</label><br>
+          
           <input type="text" id="txt_Cliente_sc" class="text-box"> <label>Clienta</label><br>
           <button type="button" onclick="EnviarServicioCompartido()">Cargar Servicio Compartido</button>
         </div>
@@ -80,64 +76,63 @@
 </div>
   </div>
 
-  <script type="text/javascript">
+ <script type="text/javascript">
+    // --- CONFIGURACIÓN ---
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbw--3Z5sAedSC26Q4Bt_HZ_l7J-M8QqskZkQjZH0za0k7R5HZu9lNAFi1URTljJ1JQJ/exec"; 
+    let TOKEN = "ClavePrueba"; 
+    let LISTA_EMPLEADOS = []; // Guardaremos los objetos {id, nombre}
 
-//AUTENTICACION Y CARGA DE DATOS INICIAL
-
-    let TOKEN = "";
-
-async function ValidarYEntrar() {
-    const pass = document.getElementById('pass-input').value;
-    if (!pass) return alert("Por favor, ingrese una contraseña");
-
-    const datosEnvio = {
-        token: pass,
-        CasoParticular: "CargarDatos"
+    // Al cargar la ventana, ejecutamos la carga inicial automáticamente
+    window.onload = function() {
+        CargaInicialAutomatica();
     };
 
-    MostrarCargando(); 
-
-    try {
-        const response = await fetch(URL_SCRIPT, {
-            method: "POST",
-            body: JSON.stringify(datosEnvio)
-        });
+    async function CargaInicialAutomatica() {
+        MostrarCargando();
         
-        const data = await response.json();
+        const datosEnvio = {
+            token: TOKEN,
+            CasoParticular: "CargarDatos"
+        };
 
-        if (data && data.empleados) {
-            TOKEN = pass; 
-            LlenarSelects(data);
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            OcultarCargando(); 
-            ConsultarUltimos(); 
+        try {
+            const response = await fetch(URL_SCRIPT, {
+                method: "POST",
+                body: JSON.stringify(datosEnvio)
+            });
             
-        } else {
-            OcultarCargando(); 
-            alert("Contraseña incorrecta");
-        }
+            const data = await response.json();
 
-    } catch (error) {
-        OcultarCargando();
-        alert("Error de conexión");
-        console.error(error);
+            if (data && data.empleados) {
+                LlenarSelects(data);
+                // Mostramos el contenido y ocultamos el cargando
+                document.getElementById('main-content').style.display = 'block';
+                OcultarCargando();
+                // Cargamos las últimas entradas
+                ConsultarUltimos(); 
+            } else {
+                throw new Error("Respuesta inválida del servidor");
+            }
+        } catch (error) {
+            OcultarCargando();
+            alert("Error al conectar con el sistema. Revisa la consola.");
+            console.error(error);
+        }
     }
-}
+
 
 function LlenarSelects(data) {
-    const opcionesEmp = data.empleados.map(n => `<option value="${n}">${n}</option>`).join('');
-    const opcionesServ = data.servicios.map(s => `<option value="${s}">${s}</option>`).join('');
+    LISTA_EMPLEADOS = data.empleados; 
+
+    const opcionesEmp = LISTA_EMPLEADOS.map(e => `<option value="${e.nombre}">${e.nombre}</option>`).join('');
+    const opcionesServ = data.servicios.map(s => `<option value="${s}">`).join('');
 
     document.getElementById('pReportar').innerHTML = '<option value="">Selecciona</option>' + opcionesEmp;
     document.getElementById('pVendio_sc').innerHTML = '<option value="">Selecciona</option>' + opcionesEmp;
     document.getElementById('pHizo_sc').innerHTML = '<option value="">Selecciona</option>' + opcionesEmp;
-    document.getElementById('Serv_sc').innerHTML = '<option value="">Selecciona</option>' + opcionesServ;
+    document.getElementById('lista-servicios').innerHTML = opcionesServ;
 }
 // AUTENTICACION Y CARGA DE DATOS INICIAL
-    // --- CONFIGURACIÓN ---
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbw--3Z5sAedSC26Q4Bt_HZ_l7J-M8QqskZkQjZH0za0k7R5HZu9lNAFi1URTljJ1JQJ/exec"; 
-
     // --- LÓGICA DE ENVÍO CENTRALIZADA ---
     async function EnviarA_Google(datos) {
       datos.token = TOKEN; // Agregamos el token de seguridad
@@ -185,10 +180,10 @@ function LlenarSelects(data) {
         CasoParticular: "NutricionCompartida",
         Vendedor: document.getElementById('pVendio_sc').selectedOptions[0].text,
         Aplicador: document.getElementById('pHizo_sc').selectedOptions[0].text,
-        Servicio: document.getElementById('Serv_sc').selectedOptions[0].text,
+        Servicio: document.getElementById('Serv_sc').value,
         Cliente: document.getElementById('txt_Cliente_sc').value
       };
-      if(!datos.Cliente || datos.Servicio === "Selecciona" || datos.Vendedor === "Selecciona" || datos.Aplicador === "Selecciona") return FlashPantalla("Faltan datos");
+      if(!datos.Cliente || !datos.Servicio || datos.Vendedor === "Selecciona" || datos.Aplicador === "Selecciona") return FlashPantalla("Faltan datos");
       EnviarA_Google(datos);
     }
 
@@ -205,13 +200,29 @@ function LlenarSelects(data) {
       document.querySelectorAll('select').forEach(s => s.value = '');
     }
 
-    // Autocompletado simple por ID
-    document.querySelectorAll('.input_profesional').forEach(input => {
-      input.addEventListener('input', function() {
-        const sel = this.previousElementSibling;
-        sel.value = this.value.toUpperCase(); // Asume que el ID en el select es igual al ID ingresado
-      });
+document.querySelectorAll('.input_profesional').forEach(input => {
+    input.addEventListener('input', function() {
+        const idBuscado = this.value.trim();
+        // El select correspondiente está justo antes del input en tu HTML
+        const selectAsociado = this.previousElementSibling; 
+
+        if (idBuscado === "") {
+            selectAsociado.value = "";
+            return;
+        }
+
+        // Buscamos el empleado que coincida con el ID
+        const empleadoEncontrado = LISTA_EMPLEADOS.find(e => e.id === idBuscado);
+
+        if (empleadoEncontrado) {
+            selectAsociado.value = empleadoEncontrado.nombre;
+            this.style.backgroundColor = "#d4edda"; // Verde clarito si lo encuentra
+        } else {
+            selectAsociado.value = "";
+            this.style.backgroundColor = "#f8d7da"; // Rojo clarito si no existe
+        }
     });
+});
     
 async function ConsultarUltimos() {
     const divLista = document.getElementById('lista-ultimos');
