@@ -11,6 +11,11 @@
 </head>
 <body class="body">
 
+  <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 10000; text-align: center; padding-top: 20%;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    <p style="margin-top: 15px; font-weight: bold; color: #007bff;">Procesando...</p>
+</div>
+
 <div id="login-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
     <h3>Ingrese Contraseña de Acceso</h3>
     <input type="password" id="pass-input" class="form-control" style="width:250px;">
@@ -83,12 +88,11 @@
 
 async function ValidarYEntrar() {
     const pass = document.getElementById('pass-input').value;
-    
-    // Intentamos pedir los datos al script usando esa pass como token
     const datosEnvio = {
         token: pass,
         CasoParticular: "CargarDatos"
     };
+    MostrarCargando();
 
     try {
         // Para esto, el script de Google debe devolver JSON correctamente.
@@ -108,8 +112,9 @@ async function ValidarYEntrar() {
     } catch (error) {
         alert("Contraseña incorrecta o error de conexión");
         console.error(error);
-    }
-    
+    } finally {
+        OcultarCargando();
+    } 
 ConsultarUltimos(); // Carga los últimos reportes al entrar
 }
 
@@ -129,7 +134,7 @@ function LlenarSelects(data) {
     // --- LÓGICA DE ENVÍO CENTRALIZADA ---
     async function EnviarA_Google(datos) {
       datos.token = TOKEN; // Agregamos el token de seguridad
-
+      MostrarCargando();
       console.log("1. Iniciando envío...", datos); // Ver qué datos estás mandando
 
   try {
@@ -153,8 +158,9 @@ function LlenarSelects(data) {
   } catch (error) {
     console.error("¡ERROR DETECTADO!", error);
     FlashPantalla("Error al enviar");
-  }
-    }
+  } finally {
+    OcultarCargando();  
+    } }
 
     // --- FUNCIONES DE CADA BOTÓN ---
     function EnviarReporte() {
@@ -233,6 +239,12 @@ async function ConsultarUltimos() {
         divLista.innerHTML = "Error al obtener datos.";
         console.error(error);
     }
+}
+function MostrarCargando() {
+    document.getElementById('loading-overlay').style.display = 'block';
+}
+function OcultarCargando() {
+    document.getElementById('loading-overlay').style.display = 'none';
 }
   </script>
 </body>
