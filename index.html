@@ -20,7 +20,7 @@
     <h3>Ingrese Contraseña de Acceso</h3>
     <input type="password" id="pass-input" class="form-control" style="width:250px;">
     <br>
-    <button onclick="ValidarYEntrar()" class="btn btn-primary">Entrar</button>
+    <button onclick="ValidarYEntrar()" class="btn btn-primary" style="margin-top: 10px;">Entrar</button>
 </div>
 
 <div id="main-content" style="display:none;">
@@ -88,14 +88,16 @@
 
 async function ValidarYEntrar() {
     const pass = document.getElementById('pass-input').value;
+    if (!pass) return alert("Por favor, ingrese una contraseña");
+
     const datosEnvio = {
         token: pass,
         CasoParticular: "CargarDatos"
     };
-    MostrarCargando();
+
+    MostrarCargando(); // Bloqueo total inicial
 
     try {
-        // Para esto, el script de Google debe devolver JSON correctamente.
         const response = await fetch(URL_SCRIPT, {
             method: "POST",
             body: JSON.stringify(datosEnvio)
@@ -103,19 +105,31 @@ async function ValidarYEntrar() {
         
         const data = await response.json();
 
-        if (data.empleados) {
-            TOKEN = pass; // Guardamos el token para futuros envíos
+        if (data && data.empleados) {
+            TOKEN = pass; 
             LlenarSelects(data);
+            
+            // 1. OCULTAMOS EL BLOQUEO TOTAL
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
+            OcultarCargando(); 
+
+            // 2. DISPARAMOS LOS REPORTES EN SEGUNDO PLANO
+            // Al no poner "await", el usuario ya puede usar la app 
+            // mientras ConsultarUltimos() muestra su propio "Consultando..."
+            ConsultarUltimos(); 
+            
+        } else {
+            OcultarCargando(); // Hay que ocultarlo para que el usuario vea el alert
+            alert("Contraseña incorrecta");
         }
+
     } catch (error) {
-        alert("Contraseña incorrecta o error de conexión");
-        console.error(error);
-    } finally {
         OcultarCargando();
-    } 
-ConsultarUltimos(); // Carga los últimos reportes al entrar
+        alert("Error de conexión");
+        console.error(error);
+    }
+    // Quitamos el finally porque ya manejamos el cierre del cargando manualmente arriba
 }
 
 function LlenarSelects(data) {
@@ -181,7 +195,7 @@ function LlenarSelects(data) {
         Servicio: document.getElementById('txt_sc').value,
         Cliente: document.getElementById('txt_Cliente_sc').value
       };
-      if(!datos.Vendedor || !datos.Cliente) return FlashPantalla("Faltan datos");
+      if(!datos.Cliente || !datos.Servicio || datos.Vendedor === "Selecciona" || datos.Aplicador === "Selecciona") return FlashPantalla("Faltan datos");
       EnviarA_Google(datos);
     }
 
@@ -226,12 +240,22 @@ async function ConsultarUltimos() {
         data.ultimosReportes.reverse().forEach(fila => {
             html += `<li><strong>${fila[2]} ${fila[3]}:</strong> ${fila[0]} (por ${fila[1]})</li>`;
         });
-        
-        html += "</ul><h5>Últimos Compartidos:</h5><ul>";
-        data.ultimosNutricion.reverse().forEach(fila => {
-            html += `<li><strong>${fila[3]}:</strong> ${fila[4]} compró ${fila[2]}</li>`;
-        });
-        html += "</ul>";
+
+// Detalle en caso de que el vendedor y el aplicador sean la misma persona
+html += "</ul><h5>Últimos Compartidos:</h5><ul>";
+data.ultimosNutricion.reverse().forEach(fila => {
+    let textoPersona;
+    // Si el Vendedor (fila[0]) es igual al Aplicador (fila[1])
+    if (fila[0] === fila[1]) {
+        textoPersona = `${fila[0]} aplicó`;
+    } else {
+        // Si son personas distintas
+        textoPersona = `${fila[0]} y ${fila[1]} aplicaron`;
+    }
+    // Formato final unificado
+    html += `<li><strong>${fila[3]} :</strong> ${textoPersona} ${fila[2]} a ${fila[4]}</li>`;
+});
+html += "</ul>";
 
         divLista.innerHTML = html;
 
@@ -246,6 +270,11 @@ function MostrarCargando() {
 function OcultarCargando() {
     document.getElementById('loading-overlay').style.display = 'none';
 }
+document.getElementById('pass-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        ValidarYEntrar();
+    } // Permite presionar Enter para validar la contraseña
+});
   </script>
 </body>
 </html>
