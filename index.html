@@ -66,7 +66,7 @@
           <select id="pHizo_sc" class="list_profesional"><option value="">Selecciona</option></select>
           <input id="pHizoID" type="text" class="input_profesional" placeholder="ID" maxlength="2" style="width:40px"/><br>
           
-          <input type="text" id="txt_sc" class="text-box"> <label>Servicio</label><br>
+          <select id="Serv_sc" class="list_profesional"><option value="">Selecciona</option></select> <label>Servicio</label><br>
           <input type="text" id="txt_Cliente_sc" class="text-box"> <label>Clienta</label><br>
           <button type="button" onclick="EnviarServicioCompartido()">Cargar Servicio Compartido</button>
         </div>
@@ -95,7 +95,7 @@ async function ValidarYEntrar() {
         CasoParticular: "CargarDatos"
     };
 
-    MostrarCargando(); // Bloqueo total inicial
+    MostrarCargando(); 
 
     try {
         const response = await fetch(URL_SCRIPT, {
@@ -108,19 +108,13 @@ async function ValidarYEntrar() {
         if (data && data.empleados) {
             TOKEN = pass; 
             LlenarSelects(data);
-            
-            // 1. OCULTAMOS EL BLOQUEO TOTAL
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             OcultarCargando(); 
-
-            // 2. DISPARAMOS LOS REPORTES EN SEGUNDO PLANO
-            // Al no poner "await", el usuario ya puede usar la app 
-            // mientras ConsultarUltimos() muestra su propio "Consultando..."
             ConsultarUltimos(); 
             
         } else {
-            OcultarCargando(); // Hay que ocultarlo para que el usuario vea el alert
+            OcultarCargando(); 
             alert("Contraseña incorrecta");
         }
 
@@ -129,7 +123,6 @@ async function ValidarYEntrar() {
         alert("Error de conexión");
         console.error(error);
     }
-    // Quitamos el finally porque ya manejamos el cierre del cargando manualmente arriba
 }
 
 function LlenarSelects(data) {
@@ -139,7 +132,7 @@ function LlenarSelects(data) {
     document.getElementById('pReportar').innerHTML = '<option value="">Selecciona</option>' + opcionesEmp;
     document.getElementById('pVendio_sc').innerHTML = '<option value="">Selecciona</option>' + opcionesEmp;
     document.getElementById('pHizo_sc').innerHTML = '<option value="">Selecciona</option>' + opcionesEmp;
-    document.getElementById('txt_sc').outerHTML = `<select id="txt_sc" class="form-control">${opcionesServ}</select>`;
+    document.getElementById('Serv_sc').innerHTML = '<option value="">Selecciona</option>' + opcionesServ;
 }
 // AUTENTICACION Y CARGA DE DATOS INICIAL
     // --- CONFIGURACIÓN ---
@@ -192,10 +185,10 @@ function LlenarSelects(data) {
         CasoParticular: "NutricionCompartida",
         Vendedor: document.getElementById('pVendio_sc').selectedOptions[0].text,
         Aplicador: document.getElementById('pHizo_sc').selectedOptions[0].text,
-        Servicio: document.getElementById('txt_sc').value,
+        Servicio: document.getElementById('Serv_sc').selectedOptions[0].text,
         Cliente: document.getElementById('txt_Cliente_sc').value
       };
-      if(!datos.Cliente || !datos.Servicio || datos.Vendedor === "Selecciona" || datos.Aplicador === "Selecciona") return FlashPantalla("Faltan datos");
+      if(!datos.Cliente || datos.Servicio === "Selecciona" || datos.Vendedor === "Selecciona" || datos.Aplicador === "Selecciona") return FlashPantalla("Faltan datos");
       EnviarA_Google(datos);
     }
 
