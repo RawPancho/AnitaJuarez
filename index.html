@@ -65,7 +65,9 @@
           <input type="text" id="txt_Cliente_sc" class="text-box"> <label>Clienta</label><br>
           <button type="button" onclick="EnviarServicioCompartido()">Cargar Servicio Compartido</button>
         </div>
+        
       </div>
+
     </div>
 
   </div>
@@ -86,7 +88,6 @@ async function ValidarYEntrar() {
     };
 
     try {
-        // Aquí no usamos no-cors porque NECESITAMOS leer la respuesta (los nombres)
         // Para esto, el script de Google debe devolver JSON correctamente.
         const response = await fetch(URL_SCRIPT, {
             method: "POST",
@@ -105,6 +106,8 @@ async function ValidarYEntrar() {
         alert("Contraseña incorrecta o error de conexión");
         console.error(error);
     }
+    
+ConsultarUltimos(); // Carga los últimos reportes al entrar
 }
 
 function LlenarSelects(data) {
@@ -141,6 +144,7 @@ function LlenarSelects(data) {
     console.log("2. Fetch finalizado (Nota: no-cors no permite ver el cuerpo de la respuesta)");
     
     FlashPantalla("¡Enviado con éxito!");
+    ConsultarUltimos(); // Actualiza la lista de últimos reportes después de enviar
     LimpiarCampos();
 
   } catch (error) {
@@ -192,7 +196,41 @@ function LlenarSelects(data) {
         sel.value = this.value.toUpperCase(); // Asume que el ID en el select es igual al ID ingresado
       });
     });
+    
+async function ConsultarUltimos() {
+    const divLista = document.getElementById('lista-ultimos');
+    divLista.innerHTML = "Consultando...";
 
+    const datosEnvio = {
+        token: TOKEN, // Usamos el token que ya tenemos guardado
+        CasoParticular: "VerUltimos"
+    };
+
+    try {
+        const response = await fetch(URL_SCRIPT, {
+            method: "POST",
+            body: JSON.stringify(datosEnvio)
+        });
+        const data = await response.json();
+
+        let html = "<h5>Últimos Reportes:</h5><ul>";
+        data.ultimosReportes.reverse().forEach(fila => {
+            html += `<li><strong>${fila[2]} ${fila[3]}:</strong> ${fila[0]} (por ${fila[1]})</li>`;
+        });
+        
+        html += "</ul><h5>Últimos Compartidos:</h5><ul>";
+        data.ultimosNutricion.reverse().forEach(fila => {
+            html += `<li><strong>${fila[3]}:</strong> ${fila[4]} compró ${fila[2]}</li>`;
+        });
+        html += "</ul>";
+
+        divLista.innerHTML = html;
+
+    } catch (error) {
+        divLista.innerHTML = "Error al obtener datos.";
+        console.error(error);
+    }
+}
   </script>
 </body>
 </html>
